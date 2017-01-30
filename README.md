@@ -16,9 +16,9 @@ Accomplish researches on deep learning and develop a tool to facilitate the clas
 
 ## Author
 
-Maikel Maciel Rönnau \n
-Computer Scientist \n
-Edicational: maikel.ronnau@ulbra.edu.br \n
-Personal: maikel.ronnau@gmail.com \n
-Mobile: +55 51 99915-3773 \n
+Maikel Maciel Rönnau  
+Computer Scientist  
+Edicational: maikel.ronnau@ulbra.edu.br  
+Personal: maikel.ronnau@gmail.com  
+Mobile: +55 51 99915-3773  
 Social: [Linkedin](https://br.linkedin.com/in/maikelronnau)
