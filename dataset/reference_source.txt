@@ -1,0 +1,3 @@
+This dataset was composed using the data provided here:
+
+http://wiki.cnbc.cmu.edu/Face_Place
