@@ -1,2 +1,5 @@
-anger
-fear
+confusion
+neutral
+sad
+disgust
+happy
