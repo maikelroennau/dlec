@@ -29,7 +29,7 @@ with tf.Session() as sess:
     
     i = 0
 
-    for file in os.listdir(image_path):
+    for file in sorted(os.listdir(image_path)):
         
         if os.path.splitext(file)[1] in image_extensions:
 
@@ -42,7 +42,7 @@ with tf.Session() as sess:
             top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
             
             i += 1
-            print ("(" + str(i) + "/" + str(len(os.listdir(image_path))) + ")  " + file)
+            print ("(" + str(i) + "/" + str(len(os.listdir(image_path))-1) + ")  " + file)
             txt_output.write("\nTarget: " + file + "\n\n")
 
             for node_id in top_k:
