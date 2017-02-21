@@ -1,6 +1,7 @@
 import tensorflow as tf
 import sys
 import os
+from natsort import natsorted, ns
 
 image_extensions = ['.jpg', '.png', '.jpeg', '.bmp', '.gif', '.tif', '.tiff']
 
@@ -29,7 +30,7 @@ with tf.Session() as sess:
     
     i = 0
 
-    for file in sorted(os.listdir(image_path)):
+    for file in natsorted(os.listdir(image_path), key=lambda y: y.lower()):
         
         if os.path.splitext(file)[1] in image_extensions:
 
