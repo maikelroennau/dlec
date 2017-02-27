@@ -1,18 +1,16 @@
-# DLMG - Deep Learning Model Generator
+# DLEC - Deep Learning Emotion Classifier
 
 ## Description
 
-DLMG is a python tool to generate deep learning based classifier models. It uses Google's Inception-V3 in a re-training  process *(transfer learning)* in order to generate new classifiers for untrained classes.
-
-DLMG also provide tools to classify generic data into Inception-V3 known classes and then train a new model with the classified data.
+DLEC is a research in the field of emotion analysis. It uses Google's Inception-V3 in a re-training process *(transfer learning)* with TensorFlow in order to generate a model able to classify human emotions.
 
 ## Motivation
 
-This is a final year projetc of Computer Science of the Universidade Luterana do Brasil
+This is a final year project of Computer Science of the Universidade Luterana do Brasil
 
 ## Objectives
 
-Accomplish researches on deep learning and develop a tool to facilitate the classification of images for further use and also provide the technology to generate new classifier models.
+Accomplish researches on deep learning and develop a model capable to classify emotions (angriness, happiness, fear, disgust, surprise and neutral) in images.
 
 ## Author
 
