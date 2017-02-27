@@ -102,6 +102,15 @@ RESIZED_INPUT_TENSOR_NAME = 'ResizeBilinear:0'
 MAX_NUM_IMAGES_PER_CLASS = 2 ** 27 - 1  # ~134M
 
 
+def update_labels_file():
+  os.remove("retrained_labels.txt")
+
+  labels = os.listdir("../dataset")
+
+  with open("retrained_labels.txt", "w") as labels_file:
+    for line in labels:
+      labels_file.write(line + "\n")
+
 def create_image_lists(image_dir, testing_percentage, validation_percentage):
   """Builds a list of training images from the file system.
 
@@ -1058,4 +1067,5 @@ if __name__ == '__main__':
       """
   )
   FLAGS, unparsed = parser.parse_known_args()
+  update_labels_file()
   tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
