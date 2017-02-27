@@ -1,0 +1,17 @@
+Classes: angry
+	 sad
+	 neutral
+	 disgust
+	 surprise
+	 fear
+	 happy
+
+Dataset: CK and CK+
+
+Cross entropy......: 0.214334
+
+Validation accuracy: 87.0% (N=100)
+
+Final test accuracy: 90.1% (N=1022)
+
+Treain steps: 30000
