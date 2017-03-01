@@ -65,7 +65,7 @@ with tf.Session() as sess:
 
     if calculate_percentage:
         for i in range(len(label_lines)):
-            print label_lines[i] + ": " + str(predicitons_score[i]) + "\t(%.5f%%)" % (float(predicitons_score[i] * 100) / float(number_files))
+            print label_lines[i] + ": %i \t(%.5f%%)" % (predicitons_score[i], (float(predicitons_score[i] * 100) / float(number_files)))
             txt_output.write("\n" + label_lines[i] + ": %i" % predicitons_score[i])
 
         print "\nTotal images: %i" % number_files
