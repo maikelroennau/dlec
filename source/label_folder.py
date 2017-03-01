@@ -15,6 +15,8 @@ image_path = sys.argv[1]
 label_lines = [line.rstrip() for line 
                    in tf.gfile.GFile("retrained_labels.txt")]
 
+predicitons_score = [0 for x in range(len(label_lines))]
+
 # Unpersists graph from file
 with tf.gfile.FastGFile("retrained_graph.pb", 'rb') as f:
     graph_def = tf.GraphDef()
@@ -51,6 +53,18 @@ with tf.Session() as sess:
                 score = predictions[0][node_id]
                 # print('%s (score = %.5f)' % (human_string, score) + "\n")
                 txt_output.write('%s (score = %.5f)' % (human_string, score) + "\n")
+
+            predicitons_score[top_k[0]] += 1
+    
+    print "\nFinal results: \n"
+    txt_output.write("\nFinal results: \n")
+    
+    for i in range(len(label_lines)):
+        print label_lines[i] + ": " + str(predicitons_score[i])
+        txt_output.write("\n" + label_lines[i] + ": " + str(predicitons_score[i]))
+
+    print "\nTotal images: " + str(len(os.listdir(image_path))-1)
+    txt_output.write("\n\nTotal images: " + str(len(os.listdir(image_path))-1))
 
 txt_output.write("\n")
 txt_output.close()
