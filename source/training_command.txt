@@ -3,6 +3,7 @@
 --image_dir ../dataset
 --output_labels retrained_labels.txt
 --output_graph retrained_graph.pb
+--summaries_dir logs
 
 
 --flip_left_right true
