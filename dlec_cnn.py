@@ -17,33 +17,41 @@ from tflearn.data_augmentation import ImageAugmentation
 from tflearn.metrics import Accuracy
 
 
-def load_images(dataset_path, classes, number_of_images):
-    x = np.zeros((number_of_images, image_height, image_width))
+def load_images(dataset_path, classes, number_of_images, number_of_channels):
+    x = np.zeros((number_of_images, image_height, image_width, number_of_channels), dtype='float64')
     y = np.zeros(number_of_images)
     count = 0
     fails = 0
 
     print('\nLoading dataset')
 
-    for dataset_class in classes:
-        print('Loading {} images'.format(dataset_class))
+    if os.path.isfile('x.npy') and os.path.isfile('y.npy'):
+        print('Loading from backup')
+        x = np.load('x.npy')
+        y = np.load('y.npy')
 
-        images_path = os.path.join(dataset_path, dataset_class)
-        for image in os.listdir(images_path):
-            # try:
-            img = io.imread(os.path.join(images_path, image))
-            # Reshape image if necessary
-            # reshaped_image = imresize(img, (image_height, image_width))
+        print('Dataset loaded from backup')
+    else:
+        for dataset_class in classes:
+            print('Loading {} images'.format(dataset_class))
 
-            x[count] = np.array(img)  # if reshaped: np.array(reshaped_image)
-            y[count] = classes.index(dataset_class)
-            count += 1
-            # except:
-            #     print('Failed to load the image {} from the class {}'.format(image, dataset_class))
-            #     fails += 1
+            images_path = os.path.join(dataset_path, dataset_class)
+            for image in os.listdir(images_path):
+                img = io.imread(os.path.join(images_path, image))
 
-    print('\nSuccessful loaded {} images'.format(len(y)))
-    print('Number of fails: {}'.format(fails))
+                # Reshape image if necessary
+                reshaped_image = imresize(img, (image_height, image_width, number_of_channels))
+
+                x[count] = np.array(reshaped_image)  # if reshaped: np.array(reshaped_image)
+                y[count] = classes.index(dataset_class)
+                count += 1
+
+        print('\nSuccessful loaded {} images'.format(len(y)))
+        print('Number of fails: {}'.format(fails))
+        print('Saving arrays to disk')
+
+        np.save('x', x)
+        np.save('y', y)
 
     return x, y
 
@@ -90,14 +98,16 @@ def get_network_architecture(image_width, image_height, number_of_channels, img_
 
 
 if __name__ == '__main__':
-    dataset_path = 'dataset/train'
-    model_checkpoint = 'model/'
+    dataset_path = 'dogs_vs_cats/train'
     train_logs_dir = 'training_logs/'
-    id = model_checkpoint + 'model_ck'
 
-    image_width = 128
-    image_height = 98
-    number_of_channels = 1
+    model_checkpoint = 'model/'
+    model_name = 'ck_model.tflearn'
+    id = 'model_ck'
+
+    image_width = 64
+    image_height = 64
+    number_of_channels = 3
 
     classes = os.listdir(dataset_path)
     number_of_classes = len(classes)
@@ -106,7 +116,7 @@ if __name__ == '__main__':
     print('\nClasses: ' + ', '.join(classes))
     print('Number of classes: {}'.format(number_of_classes))
 
-    images, labels = load_images(dataset_path, classes, number_of_images)
+    images, labels = load_images(dataset_path, classes, number_of_images, number_of_channels)
 
     X, X_test, Y, Y_test = train_test_split(images, labels, test_size=0.1, random_state=42)
 
@@ -134,10 +144,20 @@ if __name__ == '__main__':
     model.fit(
         X, Y, 
         validation_set=(X_test, Y_test), 
-        batch_size=100,
-        n_epoch=2,
+        batch_size=200,
+        n_epoch=1,
         run_id=id,
         show_metric=True
     )
 
-    model.save(os.path.join(model_checkpoint, 'ck_final.tflearn'))
+    model.save(os.path.join(model_checkpoint, model_name))
+
+    # Test
+
+    img = io.imread('dogs_vs_cats/test/2.jpg')
+    reshaped_image = imresize(img, (image_height, image_width, number_of_channels))
+    to_predict = np.zeros((number_of_images, image_height, image_width, number_of_channels), dtype='float64')
+    to_predict[0] = np.array(reshaped_image)  # if reshaped: np.array(reshaped_image)
+
+    print(model.predict(to_predict))
+    print(model.predict_label(to_predict))
