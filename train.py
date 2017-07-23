@@ -15,8 +15,8 @@ def train():
     number_of_classes = len(dataset_loader.get_classes(train_dataset))
     learning_rate = 0.001
     
-    image_width = 68
-    image_height = 68
+    image_width = 64
+    image_height = 64
     number_of_channels = 3
 
     images, labels = dataset_loader.load_images(train_dataset, image_height, image_width, colored=True)
@@ -45,7 +45,7 @@ def train():
         X, Y,
         validation_set=(X_test, Y_test),
         batch_size=200,
-        n_epoch=3,
+        n_epoch=100,
         run_id='001',
         show_metric=True
     )
