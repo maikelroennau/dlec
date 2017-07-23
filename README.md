@@ -17,4 +17,4 @@ Accomplish researches on deep learning and develop a model capable to classify h
 **Maikel Maciel Rönnau**  
 *Computer Scientist  
 maikel.ronnau@ulbra.edu.br  
-Social: [Linkedin](https://br.linkedin.com/in/maikelronnau)*
+[Linkedin](https://br.linkedin.com/in/maikelronnau)*
