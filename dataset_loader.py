@@ -9,7 +9,7 @@ from scipy.misc import imresize, imsave
 from tflearn.data_utils import image_preloader
 
 
-def load_dataset_images(dataset_path, image_height, image_width, dataset_name='unnamed', colored=True, export_dataset=True):
+def load_dataset_images(dataset_path, image_height, image_width, dataset_name='unnamed', colored=True, load_backup=False, export_dataset=False):
 
     number_of_channels = 3
 
@@ -38,7 +38,7 @@ def load_dataset_images(dataset_path, image_height, image_width, dataset_name='u
 
     data_folder = 'data/'
 
-    if os.path.isfile('{}{}_x.npy'.format(data_folder, dataset_name)) and os.path.isfile('{}{}_y.npy'.format(data_folder, dataset_name)):
+    if load_backup and (os.path.isfile('{}{}_x.npy'.format(data_folder, dataset_name)) and os.path.isfile('{}{}_y.npy'.format(data_folder, dataset_name))):
         print('Loading from backup')
         x = np.load('{}{}_x.npy'.format(data_folder, dataset_name))
         y = np.load('{}{}_y.npy'.format(data_folder, dataset_name))
@@ -103,16 +103,6 @@ def load_images(images_path, image_height, image_width, colored=True):
     print('Number of fails: {}\n'.format(fails))
 
     return x
-
-
-def load(dataset_path, image_height, image_width, grayscale=False):
-    return image_preloader(
-        dataset_path,
-        (image_height, image_width),
-        mode='folder',
-        categorical_labels=True,
-        grayscale=grayscale,
-        normalize=True)
 
 
 def get_classes(dataset_path):
