@@ -16,7 +16,7 @@ def train():
     learning_rate = 0.001
     
     image_width = 68
-    image_height = 38
+    image_height = 68
     number_of_channels = 3
 
     images, labels = dataset_loader.load_images(train_dataset, image_height, image_width, colored=True)

@@ -26,17 +26,10 @@ def get_network_architecture(image_width, image_height, number_of_channels, numb
         data_augmentation=img_aug
     )
 
-    # network = conv_2d(network, 32, 3, activation='relu', name="Conv2D_1")
-    # network = max_pool_2d(network, 2)
-    # network = conv_2d(network, 64, 3, activation='relu', name="Conv2D_2")
-    # network = max_pool_2d(network, 2, strides=2)
-    # network = fully_connected(network, 512, activation='relu')
-    # network = fully_connected(network, 250, activation='relu')
-
     network = conv_2d(network, 32, (5, 5), 2, padding='same', activation='relu', name="Conv2D_1")
     network = max_pool_2d(network, (2, 2), strides=2, padding='same', name="MaxPool2D_1")
 
-    network = conv_2d(network, 62, (5, 5), 2, padding='same', activation='relu', name="Conv2D_2")
+    network = conv_2d(network, 64, (5, 5), 2, padding='same', activation='relu', name="Conv2D_2")
     network = max_pool_2d(network, (2, 2), strides=2, padding='same', name="MaxPool2D_2")
 
     network = fully_connected(network, 512, activation='relu', name="FullyConnected__1")
@@ -45,17 +38,16 @@ def get_network_architecture(image_width, image_height, number_of_channels, numb
     network = dropout(network, 0.4, name="Dropout")
     network = fully_connected(network, number_of_classes, activation='softmax', name="FullyConnected_Final")
 
+    accuracy = Accuracy(name='Accuracy')
+
     network = regression(
         network,
         optimizer='adam',
         loss='categorical_crossentropy',
-        metric='default',
+        metric=accuracy,
         learning_rate=learning_rate,
         name='Regression'
     )
-
-    # accuracy = Accuracy(name='Accuracy')
-    # adam = tflearn.optimizers.Adam(learning_rate=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8, use_locking=False, name="Adam")
 
     return network
 

@@ -52,13 +52,6 @@ def load_images(dataset_path, image_height, image_width, colored=True):
 
                 count += 1
 
-                # if count == 0:
-                #     imsave('test.jpg', x[count])
-                #     print('\nImage label: {}'.format(classes.index(dataset_class)))
-                #     print('Class: {}'.format(classes[classes.index(dataset_class)]))
-                #     print('Index: {}'.format(classes.index(dataset_class)))
-                #     print('Image label (categorical): {}'.format(y[count]))
-
         print('\nSuccessful loaded {} images'.format(len(y)))
         print('Number of fails: {}'.format(fails))
         print('Saving arrays to disk')
@@ -73,7 +66,6 @@ def load_images(dataset_path, image_height, image_width, colored=True):
 
 def get_classes(dataset_path):
     return os.listdir(dataset_path)
-
 
 def get_total_number_of_images(dataset_path):
     total_images = 0
