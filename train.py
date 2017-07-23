@@ -9,17 +9,17 @@ from tflearn.data_utils import shuffle, to_categorical
 
 
 def train():
-    train_dataset = 'datasets/kdef_dataset/'
+    train_dataset = 'datasets/dogs_vs_cats/train'
     dataset_name = train_dataset.split('/')[1]
     validation_dataset = None
 
     number_of_classes = len(dataset_loader.get_classes(train_dataset))
     learning_rate = 0.005
 
-    image_width = 240
-    image_height = 184
+    image_width = 64
+    image_height = 64
 
-    images, labels = dataset_loader.load_dataset_images(train_dataset, image_height, image_width, dataset_name, colored=True, export_dataset=True)
+    images, labels = dataset_loader.load_dataset_images(train_dataset, image_height, image_width, dataset_name, colored=True, load_backup=True, export_dataset=True)
     X, X_test, Y, Y_test = train_test_split(images, labels, test_size=0.1, random_state=42)
 
     Y = to_categorical(Y, number_of_classes)
@@ -35,9 +35,9 @@ def train():
     )
 
     model.fit(
-        X, Y,
-        validation_set=(X_test, Y_test),
-        batch_size=30,
+        {'images' : X}, {'labels' : Y},
+        validation_set=({'test_images' : X_test}, {'test_labels' : Y_test}),
+        batch_size=int((len(X)*0.01)),
         n_epoch=10,
         run_id='001',
         show_metric=True

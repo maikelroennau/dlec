@@ -1,39 +1,71 @@
+import os
 import numpy as np
 
 import cnn
 import dataset_loader
 
 import tflearn
+from tflearn.data_utils import to_categorical
 
 from skimage import color, io
 from scipy.misc import imresize, imsave
 
 
-train_dataset = 'datasets/dogs_vs_cats/train'
-validation_dataset = 'datasets/dogs_vs_cats/small'
+def get_model(model_path, number_of_classes):
+    network = cnn.get_network_architecture(image_width, image_height, number_of_classes, learning_rate)
+    model = tflearn.DNN(network)
 
-number_of_classes = len(dataset_loader.get_classes(train_dataset))
-learning_rate = 0.001
+    return model
 
-image_width = 68
-image_height = 68
-number_of_channels = 3
 
-model_path = 'final_model/final_model.tflearn'
+def load_images(images_path, image_height, image_width):
+    images = dataset_loader.load_images(images_path, image_height, image_width)
 
-network = cnn.get_network_architecture(image_width, image_height, number_of_channels, number_of_classes, learning_rate)
+    return images
 
-model = tflearn.DNN(network)
-model.load(model_path)
 
-image_path = '/home/maikel/Desktop/dlec/datasets/dogs_vs_cats/small/1.jpg'
+def get_list(array):
+    new_list = []
+    for item in array:
+        new_list.append(item)
 
-image = io.imread(image_path)#.reshape((image_width, image_height, number_of_channels)).astype(np.float) / 255
-image = imresize(image, (image_height, image_width, number_of_channels)).astype(np.float) / 255
+    return new_list
 
-print('\n{}'.format(dataset_loader.get_classes(train_dataset)))
-print(model.predict_label([image]))
+
+def predict(model, images):
+    cat = 0
+    dog = 0
+
+    i = 0
+    for image in images:
+        prediction = model.predict([image])[0]
+
+        if prediction[0] > prediction[1]:
+            imsave('predictions/cat/{}.jpg'.format(i), image)
+        else:
+            imsave('predictions/dog/{}.jpg'.format(i), image)
+
+        print('cat: {}  dog: {}'.format(prediction[0], prediction[1]))
+        i += 1
+
+
+def save_image(image, name):
+    imsave('predictions/{}.jpg'.format(name), image)
 
 
 if __name__ == '__main__':
-    pass
+    model_path = 'final_model/final_model.tflearn'
+    images_path = 'datasets/dogs_vs_cats/train/dog'
+
+    image_height = 64
+    image_width = 64
+    learning_rate = 0.005
+    number_of_classes = 2
+
+    model = get_model(model_path, number_of_classes)
+    model.load(model_path)
+
+    images = load_images(images_path, image_height, image_width)
+    
+    predict(model, images)
+    
