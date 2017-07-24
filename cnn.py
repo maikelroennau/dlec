@@ -17,6 +17,9 @@ img_aug = ImageAugmentation()
 img_aug.add_random_flip_leftright()
 img_aug.add_random_rotation(max_angle=2.)
 
+# img_aug.add_random_90degrees_rotation (rotations=[0, 1, 2, 3])
+# img_aug.add_random_blur(sigma_max=5.0)
+
 
 def get_network_architecture(image_width, image_height, number_of_classes, learning_rate, colored=True):
 
@@ -35,18 +38,22 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
             data_augmentation=img_aug
         )
 
-    network = conv_2d(network, 32, (5, 5), 2, padding='same', activation='relu', name="Conv2D_1")
+    network = conv_2d(network, 32, (5, 5), 1, padding='same', activation='relu', name="Conv2D_1")
     network = max_pool_2d(network, (2, 2), strides=2, padding='same', name="MaxPool2D_1")
 
-    network = conv_2d(network, 64, (5, 5), 2, padding='same', activation='relu', name="Conv2D_2")
+    network = conv_2d(network, 64, (5, 5), 1, padding='same', activation='relu', name="Conv2D_2")
     network = max_pool_2d(network, (2, 2), strides=2, padding='same', name="MaxPool2D_2")
 
-    network = conv_2d(network, 64, (2, 2), 2, padding='same', activation='relu', name="Conv2D_3")
+    network = conv_2d(network, 128, (3, 3), 1, padding='same', activation='relu', name="Conv2D_3")
     network = max_pool_2d(network, (2, 2), strides=2, padding='same', name="MaxPool2D_3")
 
-    network = fully_connected(network, 128, activation='relu', name="FullyConnected__1")
+    network = conv_2d(network, 256, (2, 2), 1, padding='same', activation='relu', name="Conv2D_4")
+    network = max_pool_2d(network, (2, 2), strides=2, padding='same', name="MaxPool2D_4")
 
-    network = dropout(network, 0.4, name="Dropout")
+    network = fully_connected(network, 512, activation='relu', name="FullyConnected__1")
+
+    network = dropout(network, 0.5, name="Dropout")
+
     network = fully_connected(network, number_of_classes, activation='softmax', name="FullyConnected_Final")
 
     accuracy = Accuracy(name='Accuracy')

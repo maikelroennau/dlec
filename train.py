@@ -9,7 +9,7 @@ from tflearn.data_utils import shuffle, to_categorical
 
 
 def train():
-    train_dataset = 'datasets/dogs_vs_cats/train'
+    train_dataset = 'datasets/ck_dataset/train'
     dataset_name = train_dataset.split('/')[1]
     validation_dataset = None
 
@@ -35,8 +35,8 @@ def train():
     )
 
     model.fit(
-        {'images' : X}, {'labels' : Y},
-        validation_set=({'test_images' : X_test}, {'test_labels' : Y_test}),
+        X, Y,
+        validation_set=(X_test, Y_test),
         batch_size=int((len(X)*0.01)),
         n_epoch=10,
         run_id='001',

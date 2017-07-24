@@ -8,6 +8,7 @@ from scipy.misc import imresize, imsave
 
 from tflearn.data_utils import image_preloader
 
+import cv2
 
 def load_dataset_images(dataset_path, image_height, image_width, dataset_name='unnamed', colored=True, load_backup=False, export_dataset=False):
 
@@ -50,7 +51,7 @@ def load_dataset_images(dataset_path, image_height, image_width, dataset_name='u
 
             images_path = os.path.join(dataset_path, dataset_class)
             for image in os.listdir(images_path):
-                img = io.imread(os.path.join(images_path, image))
+                img = cv2.imread(os.path.join(images_path, image))
 
                 if colored:
                     reshaped_image = imresize(img, (image_height, image_width, number_of_channels))
@@ -92,7 +93,7 @@ def load_images(images_path, image_height, image_width, colored=True):
     fails = 0
 
     for image in os.listdir(images_path):
-        img = io.imread(os.path.join(images_path, image))
+        img = cv2.imread(os.path.join(images_path, image))
 
         reshaped_image = imresize(img, (image_height, image_width, number_of_channels))
 
