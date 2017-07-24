@@ -32,6 +32,10 @@ def get_list(array):
     return new_list
 
 
+def load_classes(classes_path):
+    return np.load(classes_path)
+
+
 def predict(model, images):
     cat = 0
     dog = 0
@@ -48,6 +52,15 @@ def predict(model, images):
         print('cat: {}  dog: {}'.format(prediction[0], prediction[1]))
         i += 1
 
+def show_predictions(model, images, classe):
+    i = 0
+    predictions = model.predict(images)
+
+    for prediction in predictions:
+        # print('\n')
+        for j in range(len(prediction)):
+            print('{:>8}  {}'.format(classes[j], prediction[j]))
+            break
 
 def save_image(image, name):
     imsave('predictions/{}.jpg'.format(name), image)
@@ -55,17 +68,23 @@ def save_image(image, name):
 
 if __name__ == '__main__':
     model_path = 'final_model/final_model.tflearn'
-    images_path = 'datasets/dogs_vs_cats/train/dog'
+    images_path = 'datasets/jaffe_dataset/neutral'
+    classes_path = 'data/ck_dataset_classes.npy'
 
     image_height = 64
     image_width = 64
     learning_rate = 0.005
-    number_of_classes = 2
+    number_of_classes = 7
 
+    print('\nGetting model architecture')
     model = get_model(model_path, number_of_classes)
+    print('Loading model')
     model.load(model_path)
 
+    print('Loading imges')
     images = load_images(images_path, image_height, image_width)
     
-    predict(model, images)
+    print('Predicting')
+    classes = load_classes(classes_path)
+    show_predictions(model, images, classes)
     
