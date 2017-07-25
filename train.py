@@ -9,7 +9,7 @@ from tflearn.data_utils import shuffle, to_categorical
 
 
 def train():
-    train_dataset = 'datasets/ck_dataset/train'
+    train_dataset = 'datasets/dogs_vs_cats/train'
     dataset_name = train_dataset.split('/')[1]
     validation_dataset = None
 

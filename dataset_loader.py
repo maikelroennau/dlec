@@ -1,6 +1,8 @@
 import os
 import numpy as np
 
+import cv2
+
 from glob import glob
 
 from skimage import color, io
@@ -8,13 +10,13 @@ from scipy.misc import imresize, imsave
 
 from tflearn.data_utils import image_preloader
 
-import cv2
 
 def load_dataset_images(dataset_path, image_height, image_width, dataset_name='unnamed', colored=True, load_backup=False, export_dataset=False):
 
     number_of_channels = 3
 
     classes = get_classes(dataset_path)
+    print('\nDataset name: {}'.format(dataset_name))
     print('\nClasses: {}'.format(', '.join(classes)))
     print('Number of classses: {}'.format(len(classes)))
 
@@ -26,10 +28,10 @@ def load_dataset_images(dataset_path, image_height, image_width, dataset_name='u
 
     print('\nTotal images: {}'.format(number_of_images))
 
-    if colored:
-        x = np.zeros((number_of_images, image_height, image_width, number_of_channels), dtype='float64')
-    else:
-        x = np.zeros((number_of_images, image_height, image_width), dtype='float64')
+    # if colored:
+    x = np.zeros((number_of_images, image_height, image_width, number_of_channels), dtype='float64')
+    # else:
+        # x = np.zeros((number_of_images, image_height, image_width), dtype='float64')
 
     y = np.zeros(number_of_images)
     count = 0
@@ -53,10 +55,10 @@ def load_dataset_images(dataset_path, image_height, image_width, dataset_name='u
             for image in os.listdir(images_path):
                 img = cv2.imread(os.path.join(images_path, image))
 
-                if colored:
-                    reshaped_image = imresize(img, (image_height, image_width, number_of_channels))
-                else:
-                    reshaped_image = imresize(img, (image_height, image_width))
+                # if colored:
+                reshaped_image = imresize(img, (image_height, image_width, number_of_channels))
+                # else:
+                    # reshaped_image = imresize(img, (image_height, image_width))
 
                 x[count] = np.array(reshaped_image)
                 y[count] = classes.index(dataset_class)
@@ -72,7 +74,7 @@ def load_dataset_images(dataset_path, image_height, image_width, dataset_name='u
                 os.makedirs('data')
             np.save('{}{}_x'.format(data_folder, dataset_name), x)
             np.save('{}{}_y'.format(data_folder, dataset_name), y)
-            np.save('{}{}_classes'.format(data_folder, dataset_name), classes)
+            np.save('{}{}_classes'.format(data_folder, dataset_name), get_classes_dictionary(classes))
 
     return x, y
 
@@ -108,6 +110,15 @@ def load_images(images_path, image_height, image_width, colored=True):
 
 def get_classes(dataset_path):
     return os.listdir(dataset_path)
+
+
+def get_classes_dictionary(classes):
+    ditcionary = {}
+    
+    for i, class_name in enumerate(classes):
+        ditcionary[i] = class_name
+
+    return ditcionary
 
 
 def get_total_number_of_images(dataset_path):

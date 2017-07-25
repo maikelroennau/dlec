@@ -38,19 +38,16 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
             data_augmentation=img_aug
         )
 
-    network = conv_2d(network, 32, (5, 5), 1, padding='same', activation='relu', name="Conv2D_1")
+    network = conv_2d(network, 32, (6, 6), 2, padding='same', activation='relu', name="Conv2D_1")
     network = max_pool_2d(network, (2, 2), strides=2, padding='same', name="MaxPool2D_1")
 
-    network = conv_2d(network, 64, (5, 5), 1, padding='same', activation='relu', name="Conv2D_2")
+    network = conv_2d(network, 64, (3, 3), 2, padding='same', activation='relu', name="Conv2D_2")
     network = max_pool_2d(network, (2, 2), strides=2, padding='same', name="MaxPool2D_2")
 
-    network = conv_2d(network, 128, (3, 3), 1, padding='same', activation='relu', name="Conv2D_3")
+    network = conv_2d(network, 128, (2, 2), 2, padding='same', activation='relu', name="Conv2D_3", regularizer='L2')
     network = max_pool_2d(network, (2, 2), strides=2, padding='same', name="MaxPool2D_3")
 
-    network = conv_2d(network, 256, (2, 2), 1, padding='same', activation='relu', name="Conv2D_4")
-    network = max_pool_2d(network, (2, 2), strides=2, padding='same', name="MaxPool2D_4")
-
-    network = fully_connected(network, 512, activation='relu', name="FullyConnected__1")
+    network = fully_connected(network, 256, activation='relu', name="FullyConnected__1")
 
     network = dropout(network, 0.5, name="Dropout")
 
@@ -61,7 +58,7 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
     network = regression(
         network,
         optimizer='adam',
-        loss='categorical_crossentropy',
+        loss='softmax_categorical_crossentropy',
         metric=accuracy,
         learning_rate=learning_rate,
         name='Regression'
