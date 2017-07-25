@@ -38,7 +38,7 @@ def train():
         X, Y,
         validation_set=(X_test, Y_test),
         batch_size=int((len(X)*0.01)),
-        n_epoch=10,
+        n_epoch=15,
         run_id='001',
         show_metric=True
     )

@@ -28,11 +28,7 @@ def load_dataset_images(dataset_path, image_height, image_width, dataset_name='u
 
     print('\nTotal images: {}'.format(number_of_images))
 
-    # if colored:
     x = np.zeros((number_of_images, image_height, image_width, number_of_channels), dtype='float64')
-    # else:
-        # x = np.zeros((number_of_images, image_height, image_width), dtype='float64')
-
     y = np.zeros(number_of_images)
     count = 0
     fails = 0
