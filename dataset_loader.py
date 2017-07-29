@@ -1,17 +1,12 @@
 import os
 import numpy as np
 
-import cv2
-
-from glob import glob
-
-from skimage import color, io
-from scipy.misc import imresize, imsave
+from cv2 import imread, resize
 
 from tflearn.data_utils import image_preloader
 
 
-def load_dataset_images(dataset_path, image_height, image_width, dataset_name='unnamed', colored=True, load_backup=False, export_dataset=False):
+def load_dataset_images(dataset_path, image_width, image_height, dataset_name='unnamed', load_backup=False, export_dataset=False):
 
     number_of_channels = 3
 
@@ -28,7 +23,7 @@ def load_dataset_images(dataset_path, image_height, image_width, dataset_name='u
 
     print('\nTotal images: {}'.format(number_of_images))
 
-    x = np.zeros((number_of_images, image_height, image_width, number_of_channels), dtype='float64')
+    x = np.zeros((number_of_images, image_width, image_height, number_of_channels), dtype='float64')
     y = np.zeros(number_of_images)
     count = 0
     fails = 0
@@ -49,12 +44,9 @@ def load_dataset_images(dataset_path, image_height, image_width, dataset_name='u
 
             images_path = os.path.join(dataset_path, dataset_class)
             for image in os.listdir(images_path):
-                img = cv2.imread(os.path.join(images_path, image))
+                img = imread(os.path.join(images_path, image))
 
-                # if colored:
-                reshaped_image = imresize(img, (image_height, image_width, number_of_channels))
-                # else:
-                    # reshaped_image = imresize(img, (image_height, image_width))
+                reshaped_image = resize(img, (image_width, image_height))
 
                 x[count] = np.array(reshaped_image)
                 y[count] = classes.index(dataset_class)
@@ -74,26 +66,22 @@ def load_dataset_images(dataset_path, image_height, image_width, dataset_name='u
 
     return x, y
 
-
-def load_images(images_path, image_height, image_width, colored=True):
+def load_images(images_path, image_width, image_height):
 
     number_of_images = len(os.listdir(images_path))
 
-    if colored:
-        number_of_channels = 3
-    else:
-        number_of_channels = 1
+    number_of_channels = 3
 
-    print('\nLoading images')
+    print('Loading images')
+    x = np.zeros((number_of_images, image_width, image_height, number_of_channels), dtype='float64')
 
-    x = np.zeros((number_of_images, image_height, image_width, number_of_channels), dtype='float64')
     count = 0
     fails = 0
 
     for image in os.listdir(images_path):
-        img = cv2.imread(os.path.join(images_path, image))
+        img = imread(os.path.join(images_path, image))
 
-        reshaped_image = imresize(img, (image_height, image_width, number_of_channels))
+        reshaped_image = resize(img, (image_width, image_height))
 
         x[count] = np.array(reshaped_image)
         count += 1
@@ -103,10 +91,22 @@ def load_images(images_path, image_height, image_width, colored=True):
 
     return x
 
+def load_image(image_path, image_width, image_height):
+
+    number_of_channels = 3
+
+    print('\nLoading image')
+    x = np.zeros((1, image_width, image_height, number_of_channels), dtype='float64')
+
+    img = imread(image_path)
+    reshaped_image = resize(img, (image_width, image_height))
+
+    x[0] = np.array(reshaped_image)
+
+    return x
 
 def get_classes(dataset_path):
     return os.listdir(dataset_path)
-
 
 def get_classes_dictionary(classes):
     ditcionary = {}
@@ -115,7 +115,6 @@ def get_classes_dictionary(classes):
         ditcionary[i] = class_name
 
     return ditcionary
-
 
 def get_total_number_of_images(dataset_path):
     total_images = 0
