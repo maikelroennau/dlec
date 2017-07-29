@@ -1,4 +1,5 @@
 import os
+import shutil
 
 import cnn
 import dataset_loader
@@ -8,8 +9,15 @@ from sklearn.cross_validation import train_test_split
 from tflearn.data_utils import shuffle, to_categorical
 
 
-def get_run_id():
-    return len(os.listdir('train_logs')) + 1 
+def create_directories():
+    directories = ['best_checkpoint', 'train_logs', 'final_model']
+
+    for directory in directories:
+        try:
+            shutil.rmtree(directory)
+            os.makedirs(directory)
+        except OSError:
+            os.makedirs(directory)
 
 def train():
     train_dataset = 'datasets/dogs_vs_cats/train'
@@ -35,6 +43,7 @@ def train():
     Y_test = to_categorical(Y_test, number_of_classes)
 
     model = cnn.get_network_architecture(image_width, image_height, number_of_classes, learning_rate)
+    create_directories()
 
     model = tflearn.DNN(
         model,
@@ -49,14 +58,11 @@ def train():
         validation_set=(X_test, Y_test),
         batch_size=int((len(X) * batch_size)),
         n_epoch=epochs,
-        run_id=str(get_run_id()),
+        run_id=dataset_name,
         show_metric=True
     )
 
-    if not os.path.isdir('final_model/'):
-        os.mkdir('final_model')
-
-    print('Saving trained model to {}'.format('model'))
+    print('Saving trained model')
     model.save('final_model/final_model.tflearn')
 
 

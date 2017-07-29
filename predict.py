@@ -20,8 +20,8 @@ def load_images(images_path, image_width, image_height):
     images = dataset_loader.load_images(images_path, image_width, image_height)
     return images
 
-def load_image(images_path, image_width, image_height):
-    image = dataset_loader.load_image(images_path, image_width, image_height)
+def load_image(images_path, image_width, image_height, on_demand=False):
+    image = dataset_loader.load_image(images_path, image_width, image_height, on_demand)
     return image
 
 def load_classes(classes_path):
@@ -39,25 +39,50 @@ def save_image(name, image):
 
 def predict(model, images, classes):
     predictions = model.predict(images)
+    del images
+    distribution = {key: 0 for key in classes.values()}
 
     for prediction_set in predictions:
         print('-' * 42)
         for j, prediction in enumerate(prediction_set):
-            print('{:>9}:  {} \t{:>10}'.format(classes[j], prediction, '|'))
+            print('{:>10}:  {}'.format(classes[j], round(prediction, 4)))
+
+            if prediction_set.tolist().index(max(prediction_set)) == prediction_set.tolist().index(prediction):
+                distribution[classes[j]] +=  1
+
     print('-' * 42)
 
-def predict_image(model, image, classes):
-    predictions = model.predict(image)
+    print('Predictions distribution:')
+    for class_label in distribution.keys():
+        print('  {}: {}'.format(class_label, distribution[class_label]))
 
+def predict_on_demand(model, images_path, image_width, image_height, classes):
+
+    distribution = {key: 0 for key in classes.values()}
+
+    for image in os.listdir(images_path):
+        images = load_image(os.path.join(images_path, image), image_width, image_height, True)
+        predictions = model.predict(images)
+
+        del images
+
+        for prediction_set in predictions:
+            print('-' * 42)
+            for j, prediction in enumerate(prediction_set):
+                print('{:>10}:  {}'.format(classes[j], round(prediction, 4)))
+
+                if prediction_set.tolist().index(max(prediction_set)) == prediction_set.tolist().index(prediction):
+                    distribution[classes[j]] +=  1
+    
     print('-' * 42)
-    for j, prediction in enumerate(predictions):
-        print('{:>9}:  {} \t{:>10}'.format(classes[j], prediction, '|'))
-    print('-' * 42)
+    print('Predictions distribution:')
+    for class_label in distribution.keys():
+        print('  {}: {}'.format(class_label, distribution[class_label]))
 
 
 if __name__ == '__main__':
     model_path = 'final_model/final_model.tflearn'
-    images_path = 'datasets/dogs_vs_cats/validation'
+    images_path = 'datasets/dogs_vs_cats/train/cat'
     classes_path = 'data/dogs_vs_cats_classes.npy'
 
     image_width = 64
@@ -73,9 +98,10 @@ if __name__ == '__main__':
     print('\nLoading model')
     model.load(model_path)
 
-    images = load_images(images_path, image_width, image_height)
+    # images = load_images(images_path, image_width, image_height)
     # image = load_image('/home/maikel/dlec/datasets/dogs_vs_cats/cars/car_0.jpg', image_width, image_height)
+    # image = load_image('/home/maikel/dlec/datasets/dogs_vs_cats/validation/2.jpg', image_width, image_height)
     
     print('Predictions')
-    # predict_image(model, image, classes)
-    predict(model, images, classes)
+    # predict(model, images, classes)
+    predict_on_demand(model, images_path, image_width, image_height, classes)
