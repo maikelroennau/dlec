@@ -34,8 +34,11 @@ def get_list(array):
 
     return new_list
 
-def save_image(name, image):
-    imsave('predictions/{}.jpg'.format(name), image)
+def save_image(name, image, path=None):
+    if not path == None:
+        imsave('{}/{}'.format(path, name), image)
+    else:
+        imsave('{}'.format(name), image)
 
 def predict(model, images, classes):
     predictions = model.predict(images)
