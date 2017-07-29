@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-from cv2 import imread, resize
+from cv2 import imread, resize, normalize, NORM_MINMAX
 
 from tflearn.data_utils import image_preloader
 
@@ -46,12 +46,14 @@ def load_dataset_images(dataset_path, image_width, image_height, dataset_name='u
             for image in os.listdir(images_path):
                 img = imread(os.path.join(images_path, image))
 
-                reshaped_image = resize(img, (image_width, image_height))
+                normalized = normalize(img, img, alpha=0, beta=255, norm_type=NORM_MINMAX)
+                reshaped_image = resize(normalized, (image_width, image_height))
 
                 x[count] = np.array(reshaped_image)
                 y[count] = classes.index(dataset_class)
 
                 count += 1
+                del img, normalized, reshaped_image
 
         print('\nSuccessful loaded {} images'.format(len(y)))
         print('Number of fails: {}'.format(fails))
@@ -81,21 +83,25 @@ def load_images(images_path, image_width, image_height):
     for image in os.listdir(images_path):
         img = imread(os.path.join(images_path, image))
 
-        reshaped_image = resize(img, (image_width, image_height))
+        normalized = normalize(img, img, alpha=0, beta=255, norm_type=NORM_MINMAX)
+        reshaped_image = resize(normalized, (image_width, image_height))
 
         x[count] = np.array(reshaped_image)
         count += 1
+        del img, normalized, reshaped_image
 
     print('\nSuccessful loaded {} images'.format(len(x)))
     print('Number of fails: {}\n'.format(fails))
 
     return x
 
-def load_image(image_path, image_width, image_height):
+def load_image(image_path, image_width, image_height, on_demand=False):
 
     number_of_channels = 3
 
-    print('\nLoading image')
+    if not on_demand:
+        print('\nLoading image')
+
     x = np.zeros((1, image_width, image_height, number_of_channels), dtype='float64')
 
     img = imread(image_path)
