@@ -8,6 +8,8 @@ from tflearn.metrics import Accuracy
 from tflearn.data_preprocessing import ImagePreprocessing
 from tflearn.data_augmentation import ImageAugmentation
 
+from tflearn.optimizers import Adam, Momentum, RMSProp
+
 
 img_prep = ImagePreprocessing()
 img_prep.add_featurewise_zero_center()
@@ -20,44 +22,56 @@ img_aug.add_random_rotation(max_angle=2.)
 # img_aug.add_random_90degrees_rotation (rotations=[0, 1, 2, 3])
 # img_aug.add_random_blur(sigma_max=5.0)
 
-
 def get_network_architecture(image_width, image_height, number_of_classes, learning_rate, colored=True):
 
     number_of_channels = 3
 
     if colored:
         network = input_data(
-            shape=[None, image_height, image_width, number_of_channels],
+            shape=[None, image_width, image_height, number_of_channels],
             data_preprocessing=img_prep,
             data_augmentation=img_aug
         )
     else:
         network = input_data(
-            shape=[None, image_height, image_width],
+            shape=[None, image_width, image_height],
             data_preprocessing=img_prep,
             data_augmentation=img_aug
         )
 
-    network = conv_2d(network, 32, (6, 6), 2, padding='same', activation='relu', name="Conv2D_1")
+    print('Layers shape:')
+    network = conv_2d(network, 32, (2, 2), 2, padding='same', activation='relu', name="Conv2D_1")
+    print('  {}: {}'.format('Conv2D_1.............', network.shape))
     network = max_pool_2d(network, (2, 2), strides=2, padding='same', name="MaxPool2D_1")
+    print('  {}: {}'.format('MaxPool2D_1..........', network.shape))
 
-    network = conv_2d(network, 64, (3, 3), 2, padding='same', activation='relu', name="Conv2D_2")
+    network = conv_2d(network, 64, (2, 2), 2, padding='same', activation='relu', name="Conv2D_2")
+    print('  {}: {}'.format('Conv2D_2.............', network.shape))
     network = max_pool_2d(network, (2, 2), strides=2, padding='same', name="MaxPool2D_2")
+    print('  {}: {}'.format('MaxPool2D_2..........', network.shape))
 
-    network = conv_2d(network, 128, (2, 2), 2, padding='same', activation='relu', name="Conv2D_3", regularizer='L2')
+    network = conv_2d(network, 128, (2, 2), 2, padding='same', activation='relu', name="Conv2D_3") # regularizer='L2'
+    print('  {}: {}'.format('Conv2D_3.............', network.shape))
     network = max_pool_2d(network, (2, 2), strides=2, padding='same', name="MaxPool2D_3")
+    print('  {}: {}'.format('MaxPool2D_3..........', network.shape))
 
-    network = fully_connected(network, 256, activation='relu', name="FullyConnected__1")
+    network = fully_connected(network, 256, activation='relu', name="FullyConnected_1")
+    print('  {}: {}'.format('FullyConnected_1.....', network.shape))
 
     network = dropout(network, 0.5, name="Dropout")
+    print('  {}: {}'.format('Dropout..............', network.shape))
 
     network = fully_connected(network, number_of_classes, activation='softmax', name="FullyConnected_Final")
+    print('  {}: {}'.format('FullyConnected_Final.', network.shape))
 
     accuracy = Accuracy(name='Accuracy')
 
+    # rmsprop = RMSProp(learning_rate=learning_rate, decay=0.9, momentum=0.4, epsilon=1e-10, name="RMSProp")
+    adam = Adam(learning_rate=learning_rate, beta1=0.9, beta2=0.999, epsilon=1e-8, name="Adam")
+
     network = regression(
         network,
-        optimizer='adam',
+        optimizer=adam,
         loss='softmax_categorical_crossentropy',
         metric=accuracy,
         learning_rate=learning_rate,
