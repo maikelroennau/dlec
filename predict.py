@@ -8,7 +8,7 @@ import tflearn
 from tflearn.data_utils import to_categorical
 
 from skimage import color, io
-from scipy.misc import imresize, imsave
+from scipy.misc import imread, imresize, imsave
 
 
 def get_model(model_path, number_of_classes):
@@ -16,11 +16,16 @@ def get_model(model_path, number_of_classes):
     model = tflearn.DNN(network)
     return model
 
-
-def load_images(images_path, image_height, image_width):
-    images = dataset_loader.load_images(images_path, image_height, image_width)
+def load_images(images_path, image_width, image_height):
+    images = dataset_loader.load_images(images_path, image_width, image_height)
     return images
 
+def load_image(images_path, image_width, image_height):
+    image = dataset_loader.load_image(images_path, image_width, image_height)
+    return image
+
+def load_classes(classes_path):
+    return np.load(classes_path).tolist()
 
 def get_list(array):
     new_list = []
@@ -29,12 +34,10 @@ def get_list(array):
 
     return new_list
 
+def save_image(name, image):
+    imsave('predictions/{}.jpg'.format(name), image)
 
-def load_classes(classes_path):
-    return np.load(classes_path).tolist()
-
-
-def show_predictions(model, images, classes):
+def predict(model, images, classes):
     predictions = model.predict(images)
 
     for prediction_set in predictions:
@@ -43,43 +46,36 @@ def show_predictions(model, images, classes):
             print('{:>9}:  {} \t{:>10}'.format(classes[j], prediction, '|'))
     print('-' * 42)
 
+def predict_image(model, image, classes):
+    predictions = model.predict(image)
 
-def separate(model, images):
-    predictions = model.predict(images)
-
-    print('Separating')
-    for i, prediction_set in enumerate(predictions):
-        if prediction_set[0] > prediction_set[1]:
-            save_image('cat/{}'.format(i), images[i])
-        else:
-            save_image('dog/{}'.format(i), images[i])
-
-def save_image(name, image):
-    imsave('predictions/{}.jpg'.format(name), image)
+    print('-' * 42)
+    for j, prediction in enumerate(predictions):
+        print('{:>9}:  {} \t{:>10}'.format(classes[j], prediction, '|'))
+    print('-' * 42)
 
 
 if __name__ == '__main__':
     model_path = 'final_model/final_model.tflearn'
     images_path = 'datasets/dogs_vs_cats/validation'
-    # images_path = 'datasets/jaffe_dataset/angriness'
     classes_path = 'data/dogs_vs_cats_classes.npy'
 
-    image_height = 64
     image_width = 64
+    image_height = 64
     learning_rate = 0.005
 
     classes = load_classes(classes_path)
     number_of_classes = len(classes)
 
-    print('\nGetting model architecture\n')
+    print('\nGetting model architecture')
     model = get_model(model_path, number_of_classes)
     
     print('\nLoading model')
     model.load(model_path)
 
-    print('Loading imges')
-    images = load_images(images_path, image_height, image_width)
+    images = load_images(images_path, image_width, image_height)
+    # image = load_image('/home/maikel/dlec/datasets/dogs_vs_cats/cars/car_0.jpg', image_width, image_height)
     
     print('Predictions')
-    # show_predictions(model, images, classes)
-    separate(model, images)
+    # predict_image(model, image, classes)
+    predict(model, images, classes)

@@ -8,8 +8,11 @@ from sklearn.cross_validation import train_test_split
 from tflearn.data_utils import shuffle, to_categorical
 
 
+def get_run_id():
+    return len(os.listdir('train_logs')) + 1 
+
 def train():
-    train_dataset = 'datasets/ck_dataset/train'
+    train_dataset = 'datasets/dogs_vs_cats/train'
     dataset_name = train_dataset.split('/')[1]
     validation_dataset = None
 
@@ -23,7 +26,7 @@ def train():
     batch_size = 0.01
     epochs = 5
 
-    images, labels = dataset_loader.load_dataset_images(train_dataset, image_width, image_height, dataset_name, colored=True, load_backup=True, export_dataset=True)
+    images, labels = dataset_loader.load_dataset_images(train_dataset, image_width, image_height, dataset_name, load_backup=True, export_dataset=True)
     X, X_test, Y, Y_test = train_test_split(images, labels, test_size=test_size, random_state=42)
 
     del images, labels
@@ -31,7 +34,7 @@ def train():
     Y = to_categorical(Y, number_of_classes)
     Y_test = to_categorical(Y_test, number_of_classes)
 
-    model = cnn.get_network_architecture(image_width, image_height, number_of_classes, learning_rate, colored=True)
+    model = cnn.get_network_architecture(image_width, image_height, number_of_classes, learning_rate)
 
     model = tflearn.DNN(
         model,
@@ -46,7 +49,7 @@ def train():
         validation_set=(X_test, Y_test),
         batch_size=int((len(X) * batch_size)),
         n_epoch=epochs,
-        run_id='001',
+        run_id=str(get_run_id()),
         show_metric=True
     )
 

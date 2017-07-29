@@ -22,24 +22,17 @@ img_aug.add_random_rotation(max_angle=2.)
 # img_aug.add_random_90degrees_rotation (rotations=[0, 1, 2, 3])
 # img_aug.add_random_blur(sigma_max=5.0)
 
-def get_network_architecture(image_width, image_height, number_of_classes, learning_rate, colored=True):
+def get_network_architecture(image_width, image_height, number_of_classes, learning_rate):
 
     number_of_channels = 3
 
-    if colored:
-        network = input_data(
-            shape=[None, image_width, image_height, number_of_channels],
-            data_preprocessing=img_prep,
-            data_augmentation=img_aug
-        )
-    else:
-        network = input_data(
-            shape=[None, image_width, image_height],
-            data_preprocessing=img_prep,
-            data_augmentation=img_aug
-        )
+    network = input_data(
+        shape=[None, image_width, image_height, number_of_channels],
+        data_preprocessing=img_prep,
+        data_augmentation=img_aug
+    )
 
-    print('Layers shape:')
+    print('\nLayers shape:')
     network = conv_2d(network, 32, (2, 2), 2, padding='same', activation='relu', name="Conv2D_1")
     print('  {}: {}'.format('Conv2D_1.............', network.shape))
     network = max_pool_2d(network, (2, 2), strides=2, padding='same', name="MaxPool2D_1")
@@ -62,7 +55,7 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
     print('  {}: {}'.format('Dropout..............', network.shape))
 
     network = fully_connected(network, number_of_classes, activation='softmax', name="FullyConnected_Final")
-    print('  {}: {}'.format('FullyConnected_Final.', network.shape))
+    print('  {}: {}\n'.format('FullyConnected_Final.', network.shape))
 
     accuracy = Accuracy(name='Accuracy')
 
