@@ -17,10 +17,8 @@ img_prep.add_featurewise_stdnorm()
 
 img_aug = ImageAugmentation()
 img_aug.add_random_flip_leftright()
-img_aug.add_random_rotation(max_angle=2.)
+img_aug.add_random_rotation(max_angle=25.)
 
-# img_aug.add_random_90degrees_rotation (rotations=[0, 1, 2, 3])
-# img_aug.add_random_blur(sigma_max=5.0)
 
 def get_network_architecture(image_width, image_height, number_of_classes, learning_rate):
 
@@ -31,6 +29,16 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
         data_preprocessing=img_prep,
         data_augmentation=img_aug
     )
+
+    """
+        def conv_2d(incoming, nb_filters, filter_size, strides=1, padding='same', 
+                    activation='linear', bias='True', weights_init='uniform_scaling', 
+                    bias_init='zeros', regularizer=None, weight_decai=0.001, 
+                    trainable=True, restore=True, reuse=False, scope=None, 
+                    name='Conv2D')
+        def max_pool_2d(incoming, kernel_size, strides=None, 
+                        padding='same', name='MaxPool2D")
+    """
 
     print('\nLayers shape:')
     network = conv_2d(network, 32, (2, 2), 2, padding='same', activation='relu', name="Conv2D_1")
