@@ -44,22 +44,26 @@ def load_dataset_images(dataset_path, image_width, image_height, dataset_name='u
 
             images_path = os.path.join(dataset_path, dataset_class)
             for image in os.listdir(images_path):
-                img = imread(os.path.join(images_path, image))
+                try:
+                    img = imread(os.path.join(images_path, image))
 
-                normalized = normalize(img, img, alpha=0, beta=255, norm_type=NORM_MINMAX)
-                reshaped_image = resize(normalized, (image_width, image_height))
+                    normalized = normalize(img, img, alpha=0, beta=255, norm_type=NORM_MINMAX)
+                    reshaped_image = resize(normalized, (image_height, image_width))
 
-                x[count] = np.array(reshaped_image)
-                y[count] = classes.index(dataset_class)
+                    x[count] = np.array(reshaped_image)
+                    y[count] = classes.index(dataset_class)
 
-                count += 1
-                del img, normalized, reshaped_image
+                    count += 1
+                    del img, normalized, reshaped_image
+                except:
+                    print('Failed to load file {} of class {}.'.format(image, dataset_class))
+                    fails += 1
 
         print('\nSuccessful loaded {} images'.format(len(y)))
         print('Number of fails: {}'.format(fails))
-        print('Saving arrays to disk')
 
         if export_dataset:
+            print('Saving arrays to disk')
             if not os.path.exists('data'):
                 os.makedirs('data')
             np.save('{}{}_x'.format(data_folder, dataset_name), x)
@@ -84,7 +88,7 @@ def load_images(images_path, image_width, image_height):
         img = imread(os.path.join(images_path, image))
 
         normalized = normalize(img, img, alpha=0, beta=255, norm_type=NORM_MINMAX)
-        reshaped_image = resize(normalized, (image_width, image_height))
+        reshaped_image = resize(normalized, (image_height, image_width))
 
         x[count] = np.array(reshaped_image)
         count += 1
