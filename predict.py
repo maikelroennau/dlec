@@ -7,6 +7,7 @@ from cv2 import imwrite
 import cnn
 import dataset_loader
 
+import tensorflow as tf
 import tflearn
 from tflearn.data_utils import to_categorical
 
@@ -39,6 +40,15 @@ def save_image(name, image, path=None):
         imwrite('{}/{}'.format(path, name), image)
     else:
         imwrite('{}'.format(name), image)
+
+# def generate_confusion_matrix(model, images, classes, number_of_classes):
+#     predictions = model.predict(images)
+#     labels = model.predict_label(images)
+#     del images
+
+#     # labels = np.array(classes.items())
+
+#     tf.confusion_matrix(labels, predictions)
 
 def predict(model, images, classes):
     predictions = model.predict(images)
@@ -98,20 +108,23 @@ def visual_evaluation(model, images, classes):
         os.system('mv {} {}'.format('predictions/img.jpg', os.path.join('predictions', classes[prediction[0][0]], str(i) + '.jpg')))
         i += 1
 
+    print('Images saved to predictions folder')
+
 def evaluate_model(model, images_path, image_width, image_height, number_of_classes, batch_size=0.01):
     images, class_labels = dataset_loader.load_dataset_images(images_path, image_width, image_height)
     labels = to_categorical(class_labels, number_of_classes)
 
-    print('\nEvaluation result: {}'.format(model.evaluate(images, labels, int((len(images) * batch_size)))))
+    print('\nEvaluating...')
+    print('Evaluation result: {}'.format(round(model.evaluate(images, labels, int((len(images) * batch_size)))[0], 4)))
 
 
 if __name__ == '__main__':
     model_path = 'final_model/final_model.tflearn'
-    images_path = 'datasets/FER+/PublicTest/happiness'
-    classes_path = 'data/train_classes.npy'
+    images_path = 'datasets/custom'
+    classes_path = 'data/custom_classes.npy'
 
-    image_width = 64
-    image_height = 64
+    image_width = 48
+    image_height = 48   
     learning_rate = 0.001
 
     classes = load_classes(classes_path)
@@ -123,7 +136,11 @@ if __name__ == '__main__':
     print('\nLoading model')
     model.load(model_path)
 
-    images = load_images(images_path, image_width, image_height)
+    # images = load_images(images_path, image_width, image_height)
     
     print('Predictions')
-    predict(model, images, classes)
+    # generate_confusion_matrix(model, images, classes, number_of_classes)
+    # predict(model, images, classes)
+    evaluate_model(model, images_path, image_width, image_height, number_of_classes)
+    # visual_evaluation(model, images, classes)
+    # predict_on_demand(model, images_path, image_width, image_height, classes)
