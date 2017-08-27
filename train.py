@@ -38,12 +38,12 @@ def train(resume_training=False):
 
     number_of_classes = len(dataset_loader.get_classes(train_dataset))
 
-    image_width = 64
-    image_height = 64
+    image_width = 48
+    image_height = 48
 
     learning_rate = 0.001
     test_size = 0.1
-    batch_size = 0.01
+    batch_size = 0.005
     epochs = 25
 
     images, labels = dataset_loader.load_dataset_images(train_dataset, image_width, image_height, dataset_name, load_backup=True, export_dataset=True)
