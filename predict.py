@@ -113,7 +113,7 @@ def predict_on_demand(model, images_path, image_width, image_height, classes):
 
                 if prediction_set.tolist().index(max(prediction_set)) == prediction_set.tolist().index(prediction):
                     distribution[classes[i]] +=  1
-    
+
     print('-' * 42)
     print('Predictions distribution:')
     for class_label in distribution.keys():
@@ -151,7 +151,7 @@ if __name__ == '__main__':
     classes_path = 'data/custom_classes.npy'
 
     image_width = 48
-    image_height = 48   
+    image_height = 48
     learning_rate = 0.001
 
     classes = load_classes(classes_path)
@@ -159,12 +159,12 @@ if __name__ == '__main__':
 
     print('\nGetting model architecture')
     model = get_model(model_path, number_of_classes)
-    
+
     print('\nLoading model')
     model.load(model_path)
 
     # images = load_images(images_path, image_width, image_height)
-    
+
     print('Predictions')
     # generate_confusion_matrix(model, images, classes, number_of_classes)
     # predict(model, images, classes)
