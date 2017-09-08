@@ -41,7 +41,7 @@ def train(resume_training=False):
     image_width = 48
     image_height = 48
 
-    learning_rate = 0.0001
+    learning_rate = 8e-4
     test_size = 0.1
     batch_size = 0.05
     epochs = 20
