@@ -26,8 +26,8 @@ def get_model(model_path, model):
     return model
 
 def get_batch_size(number_of_images, percentage):
-    if (number_of_images * percentage) > 200:
-        return 200
+    if (number_of_images * percentage) > 30:
+        return 30
     else:
         return int(number_of_images * percentage)
 

@@ -3,6 +3,7 @@ import tflearn
 from tflearn.layers.core import input_data, dropout, fully_connected
 from tflearn.layers.conv import conv_2d, max_pool_2d
 from tflearn.layers.estimator import regression
+from tflearn.layers.normalization import batch_normalization, local_response_normalization
 from tflearn.metrics import Accuracy
 
 from tflearn.data_preprocessing import ImagePreprocessing
@@ -43,17 +44,34 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
 
     print('\nLayers shape:')
     network = conv_2d(network, 32, 6, strides=1, padding='same', activation='relu', regularizer='L2', name="Conv2D_1")
-    print('  {}: {}'.format('Conv2D_1.............', network.shape))
+    print('  {}: {}'.format('Conv2D...............', network.shape))
     network = max_pool_2d(network, 4, strides=2, padding='same', name="MaxPool2D_1")
-    print('  {}: {}'.format('MaxPool2D_1..........', network.shape))
+    print('  {}: {}'.format('MaxPool2D............', network.shape))
+
+    network = batch_normalization(network, name='BatchNormalization_1')
+    print('  {}: {}'.format('BatchNormalization...', network.shape))
 
     network = conv_2d(network, 64, 4, strides=1, padding='same', activation='relu', regularizer='L2', name="Conv2D_2")
-    print('  {}: {}'.format('Conv2D_2.............', network.shape))
+    print('  {}: {}'.format('Conv2D...............', network.shape))
     network = max_pool_2d(network, 4, strides=2, padding='same', name="MaxPool2D_2")
-    print('  {}: {}'.format('MaxPool2D_2..........', network.shape))
+    print('  {}: {}'.format('MaxPool2D............', network.shape))
+
+    network = batch_normalization(network, name='BatchNormalization_2')
+    print('  {}: {}'.format('BatchNormalization...', network.shape))
+
+    network = dropout(network, 0.3, name="Dropout_1")
+    print('  {}: {}'.format('Dropout..............', network.shape))
+
+    network = conv_2d(network, 128, 2, strides=1, padding='same', activation='relu', regularizer='L2', name="Conv2D_3")
+    print('  {}: {}'.format('Conv2D_2.............', network.shape))
+    network = max_pool_2d(network, 2, strides=2, padding='same', name="MaxPool2D_3")
+    print('  {}: {}'.format('MaxPool2D............', network.shape))
+
+    network = batch_normalization(network, name='BatchNormalization_3')
+    print('  {}: {}'.format('BatchNormalization...', network.shape))
 
     network = fully_connected(network, 4096, activation='relu', name="FullyConnected_1")
-    print('  {}: {}'.format('FullyConnected_2.....', network.shape))
+    print('  {}: {}'.format('FullyConnected.......', network.shape))
 
     network = fully_connected(network, number_of_classes, activation='softmax', name="FullyConnected_Final")
     print('  {}: {}\n'.format('FullyConnected_Final.', network.shape))
