@@ -1,5 +1,6 @@
 import os
 import numpy as np
+from random import shuffle
 
 from cv2 import imread, resize, normalize, NORM_MINMAX
 
@@ -43,7 +44,9 @@ def load_dataset_images(dataset_path, image_width, image_height, dataset_name='u
             print('Loading {} class'.format(dataset_class))
 
             images_path = os.path.join(dataset_path, dataset_class)
-            for image in os.listdir(images_path):
+            images_list = os.listdir(images_path)
+            shuffle(images_list)
+            for image in images_list:
                 try:
                     img = imread(os.path.join(images_path, image))
 
