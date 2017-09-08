@@ -41,20 +41,20 @@ def train(resume_training=False):
     image_width = 48
     image_height = 48
 
-    learning_rate = 0.001
+    learning_rate = 0.0001
     test_size = 0.1
-    batch_size = 0.005
-    epochs = 25
+    batch_size = 0.05
+    epochs = 20
 
     images, labels = dataset_loader.load_dataset_images(train_dataset, image_width, image_height, dataset_name, load_backup=True, export_dataset=True)
-    X, X_test, Y, Y_test = train_test_split(images, labels, test_size=test_size, random_state=42)
+    X, X_test, Y, Y_test = train_test_split(images, labels, test_size=test_size, random_state=17)
 
     del images, labels
 
     Y = to_categorical(Y, number_of_classes)
     Y_test = to_categorical(Y_test, number_of_classes)
 
-    model = cnn.get_network_architecture(image_width, image_height, number_of_classes, learning_rate)
+    network = cnn.get_network_architecture(image_width, image_height, number_of_classes, learning_rate)
 
     if (resume_training):
         model = get_model('final_model/final_model.tflearn', model)
@@ -62,7 +62,7 @@ def train(resume_training=False):
         create_directories()
 
     model = tflearn.DNN(
-        model,
+        network,
         tensorboard_verbose=3,
         tensorboard_dir='train_logs/',
         max_checkpoints=3,
