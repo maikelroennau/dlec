@@ -40,15 +40,43 @@ def save_image(name, image, path=None):
         imwrite('{}/{}'.format(path, name), image)
     else:
         imwrite('{}'.format(name), image)
+def generate_confusion_matrix(model, images, classes, number_of_classes):
+    data = np.zeros((number_of_classes, number_of_classes))
 
-# def generate_confusion_matrix(model, images, classes, number_of_classes):
-#     predictions = model.predict(images)
-#     labels = model.predict_label(images)
-#     del images
+    for i in xrange(images.shape[0]):
+        result = model.predict(images)
+        data[np.argmax(classes[i]), result[0].index(max(result[0]))] += 1
 
-#     # labels = np.array(classes.items())
+    for i in range(len(data)):
+    	total = np.sum(data[i])
 
-#     tf.confusion_matrix(labels, predictions)
+	for x in range(len(data[0])):
+		data[i][x] = data[i][x] / total
+
+    print data
+
+    print '[] Generating graph'
+    c = plt.pcolor(data, edgecolors = 'k', linewidths = 4, cmap = 'Blues', vmin = 0.0, vmax = 1.0)
+    show_values(c)
+
+def show_values(pc, fmt="%.2f", **kw):
+    from itertools import izip
+
+    pc.update_scalarmappable()
+    ax = pc.get_axes()
+    ax.set_yticks(np.arange(7) + 0.5, minor = False)
+    ax.set_xticks(np.arange(7) + 0.5, minor = False)
+    ax.set_xticklabels(classes, minor = False)
+    ax.set_yticklabels(classes, minor = False)
+
+    for p, color, value in izip(pc.get_paths(), pc.get_facecolors(), pc.get_array()):
+        x, y = p.vertices[:-2, :].mean(0)
+
+        if np.all(color[:3] > 0.5):
+            color = (0.0, 0.0, 0.0)
+        else:
+            color = (1.0, 1.0, 1.0)
+            ax.text(x, y, fmt % value, ha = "center", va = "center", color = color, **kw)
 
 def predict(model, images, classes):
     predictions = model.predict(images)
@@ -70,7 +98,6 @@ def predict(model, images, classes):
         print('  {}: {}'.format(class_label, distribution[class_label]))
 
 def predict_on_demand(model, images_path, image_width, image_height, classes):
-
     distribution = {key: 0 for key in classes.values()}
 
     for image in os.listdir(images_path):
