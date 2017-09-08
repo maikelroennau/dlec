@@ -1,0 +1,13 @@
+# Compiled source #
+###################
+
+*.pyc
+
+# Folders #
+###########
+
+Datasets/
+best_checkpoint/
+data/
+final_model/
+train_logs/
