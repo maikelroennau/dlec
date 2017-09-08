@@ -31,12 +31,13 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
     )
 
     """
-        def conv_2d(incoming, nb_filters, filter_size, strides=1, padding='same', 
-                    activation='linear', bias='True', weights_init='uniform_scaling', 
-                    bias_init='zeros', regularizer=None, weight_decai=0.001, 
-                    trainable=True, restore=True, reuse=False, scope=None, 
+        def conv_2d(incoming, nb_filters, filter_size, strides=1, padding='same',
+                    activation='linear', bias='True', weights_init='uniform_scaling',
+                    bias_init='zeros', regularizer=None, weight_decai=0.001,
+                    trainable=True, restore=True, reuse=False, scope=None,
                     name='Conv2D')
-        def max_pool_2d(incoming, kernel_size, strides=None, 
+
+        def max_pool_2d(incoming, kernel_size, strides=None,
                         padding='same', name='MaxPool2D")
     """
 

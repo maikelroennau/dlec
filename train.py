@@ -22,7 +22,7 @@ def create_directories():
 def get_model(model_path, model):
     print('\nRestoring model')
     model.load(model_path)
-    
+
     return model
 
 def get_batch_size(number_of_images, percentage):
@@ -32,7 +32,7 @@ def get_batch_size(number_of_images, percentage):
         return int(number_of_images * percentage)
 
 def train(resume_training=False):
-    train_dataset = 'datasets/custom'
+    train_dataset = 'Datasets/CRFK'
     dataset_name = train_dataset.split('/')[1]
     validation_dataset = None
 

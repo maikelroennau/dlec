@@ -123,7 +123,7 @@ def get_classes(dataset_path):
 
 def get_classes_dictionary(classes):
     ditcionary = {}
-    
+
     for i, class_name in enumerate(classes):
         ditcionary[i] = class_name
 
