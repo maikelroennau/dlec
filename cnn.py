@@ -49,7 +49,7 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
 
     network = conv_2d(network, 64, 4, strides=1, padding='same', activation='relu', regularizer='L2', name="Conv2D_2")
     print('  {}: {}'.format('Conv2D_2.............', network.shape))
-    network = max_pool_2d(network, 4, strides=2, padding='same', name="MaxPool2D_1")
+    network = max_pool_2d(network, 4, strides=2, padding='same', name="MaxPool2D_2")
     print('  {}: {}'.format('MaxPool2D_2..........', network.shape))
 
     network = fully_connected(network, 4096, activation='relu', name="FullyConnected_1")
