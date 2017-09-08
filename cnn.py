@@ -41,42 +41,32 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
     """
 
     print('\nLayers shape:')
-    network = conv_2d(network, 64, (5, 5), strides=1, padding='same', activation='relu', name="Conv2D_1")
+    network = conv_2d(network, 32, 6, strides=1, padding='same', activation='relu', regularizer='L2', name="Conv2D_1")
     print('  {}: {}'.format('Conv2D_1.............', network.shape))
-    network = max_pool_2d(network, (3, 3), strides=2, padding='same', name="MaxPool2D_1")
+    network = max_pool_2d(network, 4, strides=2, padding='same', name="MaxPool2D_1")
     print('  {}: {}'.format('MaxPool2D_1..........', network.shape))
 
-    network = conv_2d(network, 64, (5, 5), strides=1, padding='same', activation='relu', name="Conv2D_2")
+    network = conv_2d(network, 64, 4, strides=1, padding='same', activation='relu', regularizer='L2', name="Conv2D_2")
     print('  {}: {}'.format('Conv2D_2.............', network.shape))
-    network = max_pool_2d(network, (3, 3), strides=2, padding='same', name="MaxPool2D_2")
+    network = max_pool_2d(network, 4, strides=2, padding='same', name="MaxPool2D_1")
     print('  {}: {}'.format('MaxPool2D_2..........', network.shape))
 
-    network = conv_2d(network, 128, (4, 4), strides=1, padding='same', activation='relu', name="Conv2D_3") # regularizer='L2'
-    print('  {}: {}'.format('Conv2D_3.............', network.shape))
-    network = dropout(network, 0.3, name="Dropout_1")
-    print('  {}: {}'.format('Dropout_1..............', network.shape))
-
-    network = fully_connected(network, 2048, activation='relu', name="FullyConnected_1")
-    print('  {}: {}'.format('FullyConnected_1.....', network.shape))
-    
-    network = fully_connected(network, 4096, activation='relu', name="FullyConnected_2")
+    network = fully_connected(network, 4096, activation='relu', name="FullyConnected_1")
     print('  {}: {}'.format('FullyConnected_2.....', network.shape))
-    network = dropout(network, 0.4, name="Dropout_2")
-    print('  {}: {}'.format('Dropout_2..............', network.shape))
 
     network = fully_connected(network, number_of_classes, activation='softmax', name="FullyConnected_Final")
     print('  {}: {}\n'.format('FullyConnected_Final.', network.shape))
 
-    accuracy = Accuracy(name='Accuracy')
+    # accuracy = Accuracy(name='Accuracy')
 
     # rmsprop = RMSProp(learning_rate=learning_rate, decay=0.9, momentum=0.4, epsilon=1e-10, name="RMSProp")
-    adam = Adam(learning_rate=learning_rate, beta1=0.9, beta2=0.999, epsilon=1e-8, name="Adam")
+    # adam = Adam(learning_rate=learning_rate, beta1=0.9, beta2=0.999, epsilon=1e-8, name="Adam")
 
     network = regression(
         network,
-        optimizer=adam,
+        optimizer='momentum',
         loss='categorical_crossentropy',
-        metric=accuracy,
+        metric='accuracy',
         learning_rate=learning_rate,
         name='Regression'
     )
