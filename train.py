@@ -26,8 +26,8 @@ def get_model(model_path, model):
     return model
 
 def get_batch_size(number_of_images, percentage):
-    if (number_of_images * percentage) > 30:
-        return 30
+    if (number_of_images * percentage) > 50:
+        return 50
     else:
         return int(number_of_images * percentage)
 
@@ -41,7 +41,7 @@ def train(resume_training=False):
     image_width = 48
     image_height = 48
 
-    learning_rate = 8e-4
+    learning_rate = 1e-3
     test_size = 0.1
     batch_size = 0.05
     epochs = 20
