@@ -57,7 +57,7 @@ def train(resume_training=False):
     network = cnn.get_network_architecture(image_width, image_height, number_of_classes, learning_rate)
 
     if (resume_training):
-        model = get_model('final_model/final_model.tflearn', model)
+        model = get_model('final_model/final_model.tflearn', network)
     else:
         create_directories()
 
