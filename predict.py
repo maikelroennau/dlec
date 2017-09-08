@@ -147,8 +147,8 @@ def evaluate_model(model, images_path, image_width, image_height, number_of_clas
 
 if __name__ == '__main__':
     model_path = 'final_model/final_model.tflearn'
-    images_path = 'datasets/custom'
-    classes_path = 'data/custom_classes.npy'
+    images_path = 'Datasets/CRFK'
+    classes_path = 'data/CRFK_classes.npy'
 
     image_width = 48
     image_height = 48
