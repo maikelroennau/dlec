@@ -7,9 +7,12 @@ from cv2 import imwrite
 import cnn
 import dataset_loader
 
-import tensorflow as tf
 import tflearn
 from tflearn.data_utils import to_categorical
+
+import tensorflow as tf
+
+from matplotlib import pyplot as plt
 
 
 def get_model(model_path, number_of_classes):
@@ -41,6 +44,7 @@ def save_image(name, image, path=None):
     else:
         imwrite('{}'.format(name), image)
 def generate_confusion_matrix(model, images, classes, number_of_classes):
+    print 'Generating confusion matrix'
     data = np.zeros((number_of_classes, number_of_classes))
 
     for i in xrange(images.shape[0]):
@@ -79,6 +83,7 @@ def show_values(pc, fmt="%.2f", **kw):
             ax.text(x, y, fmt % value, ha = "center", va = "center", color = color, **kw)
 
 def predict(model, images, classes):
+    print 'Predicting...'
     predictions = model.predict(images)
     del images
     distribution = {key: 0 for key in classes.values()}
@@ -98,6 +103,7 @@ def predict(model, images, classes):
         print('  {}: {}'.format(class_label, distribution[class_label]))
 
 def predict_on_demand(model, images_path, image_width, image_height, classes):
+    print 'Predicting...'
     distribution = {key: 0 for key in classes.values()}
 
     for image in os.listdir(images_path):
@@ -120,6 +126,7 @@ def predict_on_demand(model, images_path, image_width, image_height, classes):
         print('  {}: {}'.format(class_label, distribution[class_label]))
 
 def visual_evaluation(model, images, classes):
+    print 'Predicting...'
     directories = [classes.values()][0]
     for directory in directories:
         try:
@@ -147,7 +154,7 @@ def evaluate_model(model, images_path, image_width, image_height, number_of_clas
 
 if __name__ == '__main__':
     model_path = 'final_model/final_model.tflearn'
-    images_path = 'Datasets/CRFK'
+    images_path = 'Datasets/FER+/Training/'
     classes_path = 'data/CRFK_classes.npy'
 
     image_width = 48
@@ -165,7 +172,6 @@ if __name__ == '__main__':
 
     # images = load_images(images_path, image_width, image_height)
 
-    print('Predictions')
     # generate_confusion_matrix(model, images, classes, number_of_classes)
     # predict(model, images, classes)
     evaluate_model(model, images_path, image_width, image_height, number_of_classes)
