@@ -5,8 +5,9 @@ import cnn
 import dataset_loader
 
 import tflearn
-from sklearn.cross_validation import train_test_split
 from tflearn.data_utils import shuffle, to_categorical
+
+from sklearn.cross_validation import train_test_split
 
 
 def create_directories():
@@ -26,8 +27,8 @@ def get_model(model_path, model):
     return model
 
 def get_batch_size(number_of_images, percentage):
-    if (number_of_images * percentage) > 50:
-        return 50
+    if (number_of_images * percentage) > 35:
+        return 35
     else:
         return int(number_of_images * percentage)
 
@@ -47,6 +48,7 @@ def train(resume_training=False):
     epochs = 20
 
     images, labels = dataset_loader.load_dataset_images(train_dataset, image_width, image_height, dataset_name, load_backup=True, export_dataset=True)
+    shuffle(images, labels)
     X, X_test, Y, Y_test = train_test_split(images, labels, test_size=test_size, random_state=17)
 
     del images, labels
