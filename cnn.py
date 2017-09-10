@@ -13,14 +13,12 @@ from tflearn.optimizers import Adam, Momentum, RMSProp
 
 
 img_prep = ImagePreprocessing()
-img_prep.add_image_normalization()
-img_prep.add_samplewise_stdnorm()
-img_prep.add_featurewise_stdnorm()
 img_prep.add_featurewise_zero_center()
+img_prep.add_featurewise_stdnorm()
 
 img_aug = ImageAugmentation()
 img_aug.add_random_flip_leftright()
-img_aug.add_random_rotation(max_angle=25.)
+img_aug.add_random_rotation(max_angle=10.)
 
 
 def get_network_architecture(image_width, image_height, number_of_classes, learning_rate):
@@ -77,7 +75,7 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
 
     network = fully_connected(network, 64, activation='relu', name="FullyConnected_1")
     print('  {}: {}'.format('FullyConnected........', network.shape))
-    network = dropout(network, 0.5, name="Dropout_1")
+    # network = dropout(network, 0.5, name="Dropout_1")
     print('  {}: {}'.format('Dropout...............', network.shape))
 
     network = fully_connected(network, number_of_classes, activation='softmax', name="FullyConnected_Final")
