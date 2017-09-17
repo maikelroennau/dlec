@@ -12,7 +12,7 @@ This is a final year project to achieve the Bachelor degree in Computer Science 
 
 Accomplish researches on deep learning and develop a model capable to classify human emotions in images.
 
-## Author
+### Author
 
 **Maikel Maciel Rönnau**  
 *Computer Scientist  
