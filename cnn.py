@@ -18,7 +18,7 @@ img_prep.add_featurewise_stdnorm()
 
 img_aug = ImageAugmentation()
 img_aug.add_random_flip_leftright()
-img_aug.add_random_rotation(max_angle=10.)
+# img_aug.add_random_rotation(max_angle=10.)
 
 
 def get_network_architecture(image_width, image_height, number_of_classes, learning_rate):
@@ -34,7 +34,7 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
     """
         def conv_2d(incoming, nb_filters, filter_size, strides=1, padding='same',
                     activation='linear', bias='True', weights_init='uniform_scaling',
-                    bias_init='zeros', regularizer=None, weight_decai=0.001,
+                    bias_init='zeros', regularizer=None, weight_decay=0.001,
                     trainable=True, restore=True, reuse=False, scope=None,
                     name='Conv2D')
 
@@ -42,6 +42,7 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
                         padding='same', name='MaxPool2D")
 
         batch_normalization(network, name='BatchNormalization')
+        
         dropout(network, 0.4, name="Dropout")
 
         accuracy = Accuracy(name='Accuracy')
@@ -51,22 +52,28 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
     """
 
     print('\nLayers shape:')
-    network = conv_2d(network, 32, (3, 3), strides=1, padding='same', activation='relu', name='Conv2D_1')
+    network = conv_2d(network, 32, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_1')
     print('  {}: {}'.format('Conv2D................', network.shape))
     network = max_pool_2d(network, (2, 2), strides=None, padding='same', name="MaxPool2D_1")
     print('  {}: {}'.format('MaxPool2D.............', network.shape))
+    # network = dropout(network, 0.4, name='Dropout_1')
+    # print('  {}: {}'.format('Dropout...............', network.shape))
 
 
-    network = conv_2d(network, 32, (3, 3), strides=1, padding='same', activation='relu', name='Conv2D_2')
+    network = conv_2d(network, 32, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_2')
     print('  {}: {}'.format('Conv2D................', network.shape))
     network = max_pool_2d(network, (2, 2), strides=None, padding='same', name='MaxPool2D_2')
     print('  {}: {}'.format('MaxPool2D.............', network.shape))
+    # network = dropout(network, 0.4, name='Dropout_2')
+    # print('  {}: {}'.format('Dropout...............', network.shape))
 
 
-    network = conv_2d(network, 64, (3, 3), strides=1, padding='same', activation='relu', name='Conv2D_3')
+    network = conv_2d(network, 64, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_3')
     print('  {}: {}'.format('Conv2D................', network.shape))
     network = max_pool_2d(network, (2, 2), strides=None, padding='same', name='MaxPool2D_3')
     print('  {}: {}'.format('MaxPool2D.............', network.shape))
+    # network = dropout(network, 0.2, name='Dropout_3')
+    # print('  {}: {}'.format('Dropout...............', network.shape))
 
 
     network = flatten(network, name="Flatten")
@@ -75,8 +82,8 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
 
     network = fully_connected(network, 64, activation='relu', name="FullyConnected_1")
     print('  {}: {}'.format('FullyConnected........', network.shape))
-    # network = dropout(network, 0.5, name="Dropout_1")
-    print('  {}: {}'.format('Dropout...............', network.shape))
+    # network = dropout(network, 0.2, name='Dropout_4')
+    # print('  {}: {}'.format('Dropout...............', network.shape))
 
     network = fully_connected(network, number_of_classes, activation='softmax', name="FullyConnected_Final")
     print('  {}: {}'.format('FullyConnected_Final..', network.shape))

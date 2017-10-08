@@ -154,12 +154,12 @@ def evaluate_model(model, images_path, image_width, image_height, number_of_clas
 
 if __name__ == '__main__':
     model_path = 'final_model/final_model.tflearn'
-    images_path = 'Datasets/FER+/Training/'
-    classes_path = 'data/CRFK_classes.npy'
+    images_path = 'Datasets/FER+/PublicTest'
+    classes_path = 'data/Custom_classes.npy'
 
-    image_width = 48
-    image_height = 48
-    learning_rate = 0.001
+    image_width = 32
+    image_height = 32
+    learning_rate = 1e-4
 
     classes = load_classes(classes_path)
     number_of_classes = len(classes)
