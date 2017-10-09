@@ -5,6 +5,7 @@ from tflearn.layers.conv import conv_2d, max_pool_2d
 from tflearn.layers.estimator import regression
 from tflearn.layers.normalization import batch_normalization, local_response_normalization
 from tflearn.metrics import Accuracy
+from tflearn.optimizers import Adam, SGD, RMSProp, Momentum
 
 from tflearn.data_preprocessing import ImagePreprocessing
 from tflearn.data_augmentation import ImageAugmentation
@@ -87,6 +88,12 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
 
     network = fully_connected(network, number_of_classes, activation='softmax', name="FullyConnected_Final")
     print('  {}: {}'.format('FullyConnected_Final..', network.shape))
+
+
+    # optimizer = Adam(learning_rate=learning_rate, beta1=0.9, beta2=0.999, epsilon=1e-08, use_locking=False, name='Adam')
+    # optimizer = SGD(learning_rate=learning_rate, lr_decay=0.01, decay_step=100, staircase=False, use_locking=False, name='SGD')
+    # optimizer = RMSProp(learning_rate=learning_rate, decay=0.9, momentum=0.9, epsilon=1e-10, use_locking=False, name='RMSProp')
+    # optimizer = Momentum(learning_rate=learning_rate, momentum=0.9, lr_decay=0.01, decay_step=100, staircase=False, use_locking=False, name='Momentum')
 
 
     network = regression(
