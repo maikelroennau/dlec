@@ -1,9 +1,8 @@
 import os
-import numpy as np
 from random import shuffle
 
-from cv2 import imread, resize, normalize, NORM_MINMAX
-
+import numpy as np
+from cv2 import NORM_MINMAX, imread, normalize, resize
 from tflearn.data_utils import image_preloader
 
 

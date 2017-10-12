@@ -1,18 +1,15 @@
 import os
 import shutil
-import numpy as np
 
+import numpy as np
+import tensorflow as tf
+import tflearn
 from cv2 import imwrite
+from matplotlib import pyplot as plt
+from tflearn.data_utils import to_categorical
 
 import cnn
 import dataset_loader
-
-import tflearn
-from tflearn.data_utils import to_categorical
-
-import tensorflow as tf
-
-from matplotlib import pyplot as plt
 
 
 def get_model(model_path, number_of_classes):
@@ -154,12 +151,12 @@ def evaluate_model(model, images_path, image_width, image_height, number_of_clas
 
 if __name__ == '__main__':
     model_path = 'final_model/final_model.tflearn'
-    images_path = 'Datasets/FER+/PublicTest'
-    classes_path = 'data/Custom_classes.npy'
+    images_path = 'Datasets/Jaffe'
+    classes_path = 'data/CK_classes.npy'
 
     image_width = 32
     image_height = 32
-    learning_rate = 1e-4
+    learning_rate = 1e-5
 
     classes = load_classes(classes_path)
     number_of_classes = len(classes)
