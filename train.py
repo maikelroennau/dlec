@@ -33,19 +33,19 @@ def get_batch_size(number_of_images, percentage):
         return int(number_of_images * percentage)
 
 def train(resume_training=False):
-    train_dataset = 'Datasets/CRFK'
+    train_dataset = 'Datasets/Collection/CK'
     dataset_name = train_dataset.split('/')[1]
-    validation_dataset = None
+    validation_dataset = 'Datasets/Collection/Custom'
 
     number_of_classes = len(dataset_loader.get_classes(train_dataset))
 
-    image_width = 48
-    image_height = 48
+    image_width = 32
+    image_height = 32
 
-    learning_rate = 1e-3
+    learning_rate = 1e-5
     test_size = 0.1
     batch_size = 0.05
-    epochs = 20
+    epochs = 100
 
     images, labels = dataset_loader.load_dataset_images(train_dataset, image_width, image_height, dataset_name, load_backup=True, export_dataset=True)
     shuffle(images, labels)
