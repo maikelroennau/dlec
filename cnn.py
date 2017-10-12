@@ -52,7 +52,9 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
         adam = Adam(learning_rate=learning_rate, beta1=0.9, beta2=0.999, epsilon=1e-8, name="Adam")
     """
 
-    print('\nLayers shape:')
+    print('\nNetwork architecture:')
+    print('  {}: {}'.format('Input.................', network.shape))
+    
     network = conv_2d(network, 32, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_1')
     print('  {}: {}'.format('Conv2D................', network.shape))
     network = max_pool_2d(network, (2, 2), strides=None, padding='same', name="MaxPool2D_1")
