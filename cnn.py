@@ -78,6 +78,12 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
     print('  {}: {}'.format('FullyConnected_Final..', network.shape))
 
 
+    # optimizer = Adam(learning_rate=learning_rate, beta1=0.9, beta2=0.999, epsilon=1e-08, use_locking=False, name='Adam')
+    # optimizer = SGD(learning_rate=learning_rate, lr_decay=0.01, decay_step=100, staircase=False, use_locking=False, name='SGD')
+    # optimizer = RMSProp(learning_rate=learning_rate, decay=0.9, momentum=0.9, epsilon=1e-10, use_locking=False, name='RMSProp')
+    # optimizer = Momentum(learning_rate=learning_rate, momentum=0.9, lr_decay=0.01, decay_step=100, staircase=False, use_locking=False, name='Momentum')
+
+
     network = regression(
         network,
         optimizer='adam',
