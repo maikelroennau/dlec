@@ -25,35 +25,51 @@ def get_model(model_path, model):
 
     return model
 
+def backup_network():
+    shutil.copyfile('cnn.py', 'final_model/cnn.py')
+
 def get_batch_size(number_of_images, percentage):
-    if (number_of_images * percentage) > 40:
-        return 40
+    if (number_of_images * percentage) > 64:
+        return 64
     else:
         return int(number_of_images * percentage)
 
 def train(resume_training=False):
     train_dataset = 'Datasets/CK'
-    dataset_name = train_dataset.split('/')[1]
+    train_dataset_name = train_dataset.split('/')[1]
     validation_dataset = 'Datasets/Custom'
+
+    if validation_dataset is not None:
+        validation_dataset_name = 'validation_{}'.format(validation_dataset.split('/')[1])
 
     number_of_classes = len(dataset_loader.get_classes(train_dataset))
 
     image_width = 32
     image_height = 32
 
-    learning_rate = 1e-5
+    learning_rate = 1e-4
     test_size = 0.1
     batch_size = 0.05
     epochs = 20
 
-    images, labels = dataset_loader.load_dataset_images(train_dataset, image_width, image_height, dataset_name, load_backup=True, export_dataset=True)
+    images, labels = dataset_loader.load_dataset_images(train_dataset, image_width, image_height, train_dataset_name, load_backup=True, export_dataset=True)
     shuffle(images, labels)
-    X, X_test, Y, Y_test = train_test_split(images, labels, test_size=test_size, random_state=17)
+    
+    if validation_dataset is None:
+        X, X_test, Y, Y_test = train_test_split(images, labels, test_size=test_size, random_state=17)
+        del images, labels
+    else:
+        X, Y = images, labels
+        del images, labels
 
-    del images, labels
+        X_test, Y_test = dataset_loader.load_dataset_images(validation_dataset, image_width, image_height, validation_dataset_name, load_backup=True, export_dataset=True)
+        shuffle(X_test, Y_test)
 
     Y = to_categorical(Y, number_of_classes)
     Y_test = to_categorical(Y_test, number_of_classes)
+
+    print '\nTrain dataset.....: {}'.format(train_dataset_name)
+    print 'Validation dataset: {}'.format(validation_dataset_name[11:])
 
     network = cnn.get_network_architecture(image_width, image_height, number_of_classes, learning_rate)
 
@@ -61,6 +77,8 @@ def train(resume_training=False):
         model = get_model('final_model/final_model.tflearn', network)
     else:
         create_directories()
+
+    backup_network()
 
     model = tflearn.DNN(
         network,
@@ -76,7 +94,7 @@ def train(resume_training=False):
             validation_set=(X_test, Y_test),
             batch_size=get_batch_size(len(X), batch_size),
             n_epoch=epochs,
-            run_id=dataset_name,
+            run_id=train_dataset_name,
             show_metric=True
         )
     except KeyboardInterrupt:
