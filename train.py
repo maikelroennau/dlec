@@ -27,6 +27,7 @@ def get_model(model_path, model):
 
 def backup_network():
     shutil.copyfile('cnn.py', 'final_model/cnn.py')
+    open('final_model/__init__.py', 'a')
 
 def get_batch_size(number_of_images, percentage):
     if (number_of_images * percentage) > 64:

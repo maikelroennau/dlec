@@ -8,8 +8,12 @@ from cv2 import imwrite
 from matplotlib import pyplot as plt
 from tflearn.data_utils import to_categorical
 
-import cnn
 import dataset_loader
+
+if (os.path.isfile('final_model/cnn.py')):
+    from final_model import cnn
+else:
+    import cnn
 
 
 def get_model(model_path, number_of_classes):
