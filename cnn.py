@@ -62,22 +62,8 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
     # print('  {}: {}'.format('Dropout...............', network.shape))
 
 
-    # network = conv_2d(network, 128, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_2')
-    # print('  {}: {}'.format('Conv2D................', network.shape))
-    # network = max_pool_2d(network, (2, 2), strides=None, padding='same', name='MaxPool2D_2')
-    # print('  {}: {}'.format('MaxPool2D.............', network.shape))
-    # network = dropout(network, 0.4, name="Dropout_3")
-    # print('  {}: {}'.format('Dropout...............', network.shape))
-
-
     network = flatten(network, name="Flatten")
     print('  {}: {}'.format('Flatten...............', network.shape))
-
-
-    network = fully_connected(network, 256, activation='relu', name='FullyConnected_1')
-    print('  {}: {}'.format('FullyConnected........', network.shape))
-    network = dropout(network, 0.4, name="Dropout_4")
-    print('  {}: {}'.format('Dropout...............', network.shape))
 
 
     network = fully_connected(network, number_of_classes, activation='softmax', name="FullyConnected_Final")

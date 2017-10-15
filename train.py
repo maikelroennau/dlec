@@ -55,7 +55,7 @@ def train(resume_training=False):
 
     images, labels = dataset_loader.load_dataset_images(train_dataset, image_width, image_height, train_dataset_name, load_backup=True, export_dataset=True)
     shuffle(images, labels)
-    
+
     if validation_dataset is None:
         X, X_test, Y, Y_test = train_test_split(images, labels, test_size=test_size, random_state=17)
         del images, labels
