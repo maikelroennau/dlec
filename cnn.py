@@ -41,6 +41,12 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
         dropout(network, 0.4, name="Dropout")
 
         accuracy = Accuracy(name='Accuracy')
+
+        print('  {}: {}'.format('Conv2D................', network.shape))
+        print('  {}: {}'.format('MaxPool2D.............', network.shape))
+        print('  {}: {}'.format('Dropout...............', network.shape))
+        print('  {}: {}'.format('Flatten...............', network.shape))
+        print('  {}: {}'.format('FullyConnected_Final..', network.shape))
     """
 
     print('\nNetwork architecture:')
@@ -48,8 +54,8 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
 
     network = conv_2d(network, 32, (2, 2), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_1')
     print('  {}: {}'.format('Conv2D................', network.shape))
-    network = max_pool_2d(network, (2, 2), strides=None, padding='same', name="MaxPool2D_1")
-    print('  {}: {}'.format('MaxPool2D.............', network.shape))
+    # network = max_pool_2d(network, (2, 2), strides=None, padding='same', name="MaxPool2D_1")
+    # print('  {}: {}'.format('MaxPool2D.............', network.shape))
     # network = dropout(network, 0.4, name="Dropout_1")
     # print('  {}: {}'.format('Dropout...............', network.shape))
 

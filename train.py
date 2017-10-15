@@ -72,6 +72,9 @@ def train(resume_training=False):
     print '\nTrain dataset.....: {}'.format(train_dataset_name)
     if validation_dataset is not None:
         print 'Validation dataset: {}'.format(validation_dataset_name[11:])
+    print 'Learning rate.....: {}'.format(learning_rate)
+    print 'Epochs............: {}'.format(epochs)
+    print 'Batch size........: {}'.format(get_batch_size(len(X), batch_size))
 
     network = cnn.get_network_architecture(image_width, image_height, number_of_classes, learning_rate)
 
