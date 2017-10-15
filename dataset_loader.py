@@ -57,6 +57,9 @@ def load_dataset_images(dataset_path, image_width, image_height, dataset_name='u
 
                     count += 1
                     del img, normalized, reshaped_image
+                except KeyboardInterrupt:
+                    print('Loading canceled.')
+                    exit(0)
                 except:
                     print('Failed to load file {} of class {}.'.format(image, dataset_class))
                     fails += 1
