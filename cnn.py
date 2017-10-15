@@ -69,7 +69,7 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
     # network = dropout(network, 0.4, name="Dropout_3")
     # print('  {}: {}'.format('Dropout...............', network.shape))
 
-    
+
     network = flatten(network, name="Flatten")
     print('  {}: {}'.format('Flatten...............', network.shape))
 
