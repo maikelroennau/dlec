@@ -46,7 +46,7 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
     print('\nNetwork architecture:')
     print('  {}: {}'.format('Input.................', network.shape))
 
-    network = conv_2d(network, 32, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_1')
+    network = conv_2d(network, 32, (2, 2), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_1')
     print('  {}: {}'.format('Conv2D................', network.shape))
     network = max_pool_2d(network, (2, 2), strides=None, padding='same', name="MaxPool2D_1")
     print('  {}: {}'.format('MaxPool2D.............', network.shape))
@@ -54,7 +54,7 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
     # print('  {}: {}'.format('Dropout...............', network.shape))
 
 
-    network = conv_2d(network, 64, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_2')
+    network = conv_2d(network, 64, (2, 2), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_2')
     print('  {}: {}'.format('Conv2D................', network.shape))
     network = max_pool_2d(network, (2, 2), strides=None, padding='same', name='MaxPool2D_2')
     print('  {}: {}'.format('MaxPool2D.............', network.shape))
@@ -89,4 +89,6 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
 
 
 if __name__ == '__main__':
-    pass
+    get_network_architecture(32, 32, 2, 0)
+
+    print '\nArchitecture sample based on input of 32x32 with 2 output classes.'
