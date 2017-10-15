@@ -70,7 +70,8 @@ def train(resume_training=False):
     Y_test = to_categorical(Y_test, number_of_classes)
 
     print '\nTrain dataset.....: {}'.format(train_dataset_name)
-    print 'Validation dataset: {}'.format(validation_dataset_name[11:])
+    if validation_dataset is not None:
+        print 'Validation dataset: {}'.format(validation_dataset_name[11:])
 
     network = cnn.get_network_architecture(image_width, image_height, number_of_classes, learning_rate)
 
