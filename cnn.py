@@ -5,8 +5,8 @@ from tflearn.layers.conv import conv_2d, max_pool_2d
 from tflearn.layers.core import dropout, flatten, fully_connected, input_data
 from tflearn.layers.estimator import regression
 from tflearn.layers.normalization import (batch_normalization, local_response_normalization)
-from tflearn.metrics import Accuracy
 from tflearn.optimizers import SGD, Adam, Momentum, RMSProp
+from tflearn.activations import relu
 
 img_prep = ImagePreprocessing()
 img_prep.add_featurewise_zero_center()
@@ -34,43 +34,50 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
                     trainable=True, restore=True, reuse=False, scope=None,
                     name='Conv2D')
 
-        def max_pool_2d(incoming, kernel_size, strides=None, padding='same', name='MaxPool2D")
-
-        batch_normalization(network, name='BatchNormalization')
-
-        dropout(network, 0.4, name="Dropout")
-
-        accuracy = Accuracy(name='Accuracy')
+        network = conv_2d(network, 32, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_1')
+        network = max_pool_2d(network, (2, 2), strides=2, padding='same', name="MaxPool2D_1")
+        network = dropout(network, 0.5, name="Dropout_1")
+        batch_normalization(network, name="BatchNormalization_1")
+        network = flatten(network, name="Flatten")
+        network = fully_connected(network, 512, activation='relu', name="FullyConnected_1")
+        network = fully_connected(network, number_of_classes, activation='softmax', name="FullyConnected_Final")
 
         print('  {}: {}'.format('Conv2D................', network.shape))
         print('  {}: {}'.format('MaxPool2D.............', network.shape))
         print('  {}: {}'.format('Dropout...............', network.shape))
         print('  {}: {}'.format('Flatten...............', network.shape))
         print('  {}: {}'.format('FullyConnected_Final..', network.shape))
+
+        CONV / FC -> Dropout -> BN -> activation function -> ...
+
+        Convolutional filters: { 32, 64, 128 }
+        Convolutional filter sizes: { 1, 3, 5, 11 }
+        Convolutional strides: 1
+        Activation: ReLu
+
+        Pooling kernel sizes: { 2, 3, 4, 5 }
+        Pooling kernel strides: 2
+        
+        Dropout probability: 0.5
+            - Higher probability of keeping in earlier stages
+            - Lower probability of keeping in later stages
     """
 
     print('\nNetwork architecture:')
     print('  {}: {}'.format('Input.................', network.shape))
 
-    network = conv_2d(network, 32, (2, 2), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_1')
-    print('  {}: {}'.format('Conv2D................', network.shape))
-    # network = max_pool_2d(network, (2, 2), strides=None, padding='same', name="MaxPool2D_1")
-    # print('  {}: {}'.format('MaxPool2D.............', network.shape))
-    # network = dropout(network, 0.4, name="Dropout_1")
-    # print('  {}: {}'.format('Dropout...............', network.shape))
 
+    network = conv_2d(network, 32, (3, 3), strides=1, padding='same', activation=None, name='Conv2D_1')
 
-    network = conv_2d(network, 64, (2, 2), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_2')
-    print('  {}: {}'.format('Conv2D................', network.shape))
-    network = max_pool_2d(network, (2, 2), strides=None, padding='same', name='MaxPool2D_2')
-    print('  {}: {}'.format('MaxPool2D.............', network.shape))
-    # network = dropout(network, 0.4, name="Dropout_2")
-    # print('  {}: {}'.format('Dropout...............', network.shape))
+    network = conv_2d(network, 64, (3, 3), strides=1, padding='same', activation=None, name='Conv2D_2')
+    
+    network = fully_connected(network, 512, activation='relu', name="FullyConnected_1")
 
+    network = dropout(network, 0.5, name="Dropout_1")
 
-    network = flatten(network, name="Flatten")
-    print('  {}: {}'.format('Flatten...............', network.shape))
+    batch_normalization(network, name="BatchNormalization_1")
 
+    network = relu(network)    
 
     network = fully_connected(network, number_of_classes, activation='softmax', name="FullyConnected_Final")
     print('  {}: {}'.format('FullyConnected_Final..', network.shape))
