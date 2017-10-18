@@ -30,8 +30,8 @@ def backup_network():
     open('final_model/__init__.py', 'a')
 
 def get_batch_size(number_of_images, percentage):
-    if (number_of_images * percentage) > 64:
-        return 64
+    if (number_of_images * percentage) > 128:
+        return 128
     else:
         return int(number_of_images * percentage)
 
@@ -48,7 +48,7 @@ def train(resume_training=False):
     image_width = 32
     image_height = 32
 
-    learning_rate = 1e-4
+    learning_rate = 1e-3
     test_size = 0.1
     batch_size = 0.05
     epochs = 20
