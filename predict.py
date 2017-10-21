@@ -64,7 +64,7 @@ def generate_confusion_matrix(model, images, classes, number_of_classes):
     c = plt.pcolor(data, edgecolors = 'k', linewidths = 4, cmap = 'Blues', vmin = 0.0, vmax = 1.0)
     show_values(c)
 
-def show_values(pc, fmt="%.2f", **kw):
+def show_values(pc, fmt='%.2f', **kw):
     from itertools import izip
 
     pc.update_scalarmappable()
@@ -81,7 +81,7 @@ def show_values(pc, fmt="%.2f", **kw):
             color = (0.0, 0.0, 0.0)
         else:
             color = (1.0, 1.0, 1.0)
-            ax.text(x, y, fmt % value, ha = "center", va = "center", color = color, **kw)
+            ax.text(x, y, fmt % value, ha='center', va='center', color=color, **kw)
 
 def predict(model, images, classes):
     print 'Predicting...'
