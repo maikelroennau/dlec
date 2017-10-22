@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 
 import numpy as np
 import tensorflow as tf
@@ -155,12 +156,20 @@ def evaluate_model(model, images_path, image_width, image_height, number_of_clas
 
 if __name__ == '__main__':
     model_path = 'final_model/final_model.tflearn'
-    images_path = 'Datasets/Jaffe'
-    classes_path = 'data/CK_classes.npy'
+
+    if len(sys.argv) > 1:
+        images_path = sys.argv[1]
+    else:
+        images_path = 'Datasets/FER+/Training'
+
+    classes_path = 'data/classes_classes.npy'
+    for file in os.listdir('data'):
+        if not file.startswith('validation_') and file[-12:].endswith('_classes.npy'):
+            classes_path = 'data/{}'.format(file)
 
     image_width = 32
     image_height = 32
-    learning_rate = 1e-5
+    learning_rate = 1e-3
 
     classes = load_classes(classes_path)
     number_of_classes = len(classes)
