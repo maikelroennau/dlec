@@ -8,7 +8,7 @@ from tflearn.data_utils import image_preloader
 
 def load_dataset_images(dataset_path, image_width, image_height, dataset_name='unnamed', load_backup=False, export_dataset=False):
 
-    number_of_channels = 3
+    number_of_channels = 1
 
     classes = get_classes(dataset_path)
     print('\nDataset name: {}'.format(dataset_name))
@@ -47,16 +47,22 @@ def load_dataset_images(dataset_path, image_width, image_height, dataset_name='u
             shuffle(images_list)
             for image in images_list:
                 try:
-                    img = imread(os.path.join(images_path, image))
+                    if number_of_channels == 1:
+                        img = imread(os.path.join(images_path, image), 0)
+                    else:
+                        img = imread(os.path.join(images_path, image))
 
-                    normalized = normalize(img, img, alpha=0, beta=255, norm_type=NORM_MINMAX)
-                    reshaped_image = resize(normalized, (image_height, image_width))
+                    resized_image = resize(img, (image_height, image_width))
 
-                    x[count] = np.array(reshaped_image)
+                    if number_of_channels == 1:
+                        x[count] = np.array(resized_image[:, :, np.newaxis])
+                    else:
+                        x[count] = np.array(resized_image)
+
                     y[count] = classes.index(dataset_class)
 
                     count += 1
-                    del img, normalized, reshaped_image
+                    del img, resized_image
                 except KeyboardInterrupt:
                     print('Loading canceled.')
                     exit(0)
@@ -66,6 +72,10 @@ def load_dataset_images(dataset_path, image_width, image_height, dataset_name='u
 
         print('\nSuccessful loaded {} images'.format(len(y)))
         print('Number of fails: {}'.format(fails))
+
+        if len(y) == fails:
+            print('Training canceled because of number of failures reading the dataset')
+            exit(0)
 
         if export_dataset:
             print('Saving arrays to disk')
@@ -81,7 +91,7 @@ def load_images(images_path, image_width, image_height):
 
     number_of_images = len(os.listdir(images_path))
 
-    number_of_channels = 3
+    number_of_channels = 1
 
     print('Loading images')
     x = np.zeros((number_of_images, image_width, image_height, number_of_channels), dtype='float64')
@@ -90,14 +100,19 @@ def load_images(images_path, image_width, image_height):
     fails = 0
 
     for image in os.listdir(images_path):
-        img = imread(os.path.join(images_path, image))
+        if number_of_channels == 1:
+            img = imread(os.path.join(images_path, image), 0)
+        else:
+            img = imread(os.path.join(images_path, image))
 
-        normalized = normalize(img, img, alpha=0, beta=255, norm_type=NORM_MINMAX)
-        reshaped_image = resize(normalized, (image_height, image_width))
+        resized_image = resize(img, (image_height, image_width))
 
-        x[count] = np.array(reshaped_image)
+        if number_of_channels == 1:
+            x[count] = np.array(resized_image[:, :, np.newaxis])
+        else:
+            x[count] = np.array(resized_image)
         count += 1
-        del img, normalized, reshaped_image
+        del img, resized_image
 
     print('\nSuccessful loaded {} images'.format(len(x)))
     print('Number of fails: {}\n'.format(fails))
@@ -106,17 +121,24 @@ def load_images(images_path, image_width, image_height):
 
 def load_image(image_path, image_width, image_height, on_demand=False):
 
-    number_of_channels = 3
+    number_of_channels = 1
 
     if not on_demand:
         print('\nLoading image')
 
     x = np.zeros((1, image_width, image_height, number_of_channels), dtype='float64')
 
-    img = imread(image_path)
-    reshaped_image = resize(img, (image_width, image_height))
+    if number_of_channels == 1:
+        img = imread(image_path, 0)
+    else:
+        img = imread(image_path)
 
-    x[0] = np.array(reshaped_image)
+    resized_image = resize(img, (image_width, image_height))
+
+    if number_of_channels == 1:
+        x[0] = np.array(resized_image[:, :, np.newaxis])
+    else:
+        x[0] = np.array(resized_image)
 
     return x
 
