@@ -36,9 +36,9 @@ def get_batch_size(number_of_images, percentage):
         return int(number_of_images * percentage)
 
 def train(resume_training=False):
-    train_dataset = 'Datasets/CK'
+    train_dataset = 'Datasets/Custom'
     train_dataset_name = train_dataset.split('/')[1]
-    validation_dataset = 'Datasets/Custom'
+    validation_dataset = 'Datasets/CK'
 
     if validation_dataset is not None:
         validation_dataset_name = 'validation_{}'.format(validation_dataset.split('/')[1])
@@ -90,7 +90,8 @@ def train(resume_training=False):
         tensorboard_verbose=3,
         tensorboard_dir='train_logs/',
         max_checkpoints=3,
-        best_checkpoint_path='best_checkpoint/'
+        best_checkpoint_path='best_checkpoint/',
+        best_val_accuracy=50.0
     )
 
     try:
@@ -100,7 +101,8 @@ def train(resume_training=False):
             batch_size=get_batch_size(len(X), batch_size),
             n_epoch=epochs,
             run_id=train_dataset_name,
-            show_metric=True
+            show_metric=True,
+            shuffle=True
         )
     except KeyboardInterrupt:
         print('Training interruped')
