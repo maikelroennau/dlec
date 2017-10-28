@@ -7,6 +7,7 @@ from tflearn.layers.core import dropout, flatten, fully_connected, input_data
 from tflearn.layers.estimator import regression
 from tflearn.layers.normalization import (batch_normalization, local_response_normalization)
 from tflearn.optimizers import SGD, Adam, Momentum, RMSProp
+from tflearn.metrics import Accuracy, R2, WeightedR2, Top_k
 
 img_prep = ImagePreprocessing()
 img_prep.add_featurewise_zero_center()
@@ -16,7 +17,7 @@ img_aug = ImageAugmentation()
 img_aug.add_random_flip_leftright()
 img_aug.add_random_blur(sigma_max=25.)
 img_aug.add_random_rotation(max_angle=10.)
-# img_aug.add_random_crop((32, 32), 6) # might need to be changed in case of different image size
+img_aug.add_random_crop((32, 32), 6) # might need to be changed in case of different image size
 
 
 def get_network_architecture(image_width, image_height, number_of_classes, learning_rate):
@@ -109,17 +110,22 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
     print('  {}: {}'.format('FullyConnected_Final..', network.shape))
 
 
-    # optimizer = Adam(learning_rate=learning_rate, beta1=0.9, beta2=0.999, epsilon=1e-08, use_locking=False, name='Adam')
+    optimizer = Adam(learning_rate=learning_rate, beta1=0.9, beta2=0.999, epsilon=1e-08, use_locking=False, name='Adam')
     # optimizer = SGD(learning_rate=learning_rate, lr_decay=0.01, decay_step=100, staircase=False, use_locking=False, name='SGD')
     # optimizer = RMSProp(learning_rate=learning_rate, decay=0.9, momentum=0.9, epsilon=1e-10, use_locking=False, name='RMSProp')
     # optimizer = Momentum(learning_rate=learning_rate, momentum=0.9, lr_decay=0.01, decay_step=100, staircase=False, use_locking=False, name='Momentum')
 
+    metric = Accuracy(name='Accuracy')
+    # metric = R2(name='Standard Error')
+    # metric = WeightedR2(name='Weighted Standard Error')
+    # metric = Top_k(k=6, name='Top K')
+
 
     network = regression(
         network,
-        optimizer='adam',
+        optimizer=optimizer,
         loss='categorical_crossentropy',
-        metric='accuracy',
+        metric=metric,
         learning_rate=learning_rate,
         name='Regression'
     )
