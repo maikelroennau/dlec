@@ -87,7 +87,7 @@ def train(resume_training=False):
 
     model = tflearn.DNN(
         network,
-        tensorboard_verbose=3,
+        tensorboard_verbose=0,
         tensorboard_dir='train_logs/',
         max_checkpoints=3,
         best_checkpoint_path='best_checkpoint/',
