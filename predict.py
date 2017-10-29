@@ -1,11 +1,18 @@
+import copy
 import os
 import shutil
+import subprocess
 import sys
+import time
+from datetime import datetime
+from multiprocessing import Process
 
 import numpy as np
 import tensorflow as tf
 import tflearn
-from cv2 import imwrite
+from cv2 import (CASCADE_SCALE_IMAGE, COLOR_BGR2GRAY, CascadeClassifier,
+                 VideoCapture, cvtColor, destroyAllWindows, imshow, imwrite,
+                 rectangle, resize, waitKey)
 from matplotlib import pyplot as plt
 from tflearn.data_utils import to_categorical
 
@@ -45,6 +52,7 @@ def save_image(name, image, path=None):
         imwrite('{}/{}'.format(path, name), image)
     else:
         imwrite('{}'.format(name), image)
+
 def generate_confusion_matrix(model, images, classes, number_of_classes):
     print 'Generating confusion matrix'
     data = np.zeros((number_of_classes, number_of_classes))
@@ -54,15 +62,15 @@ def generate_confusion_matrix(model, images, classes, number_of_classes):
         data[np.argmax(classes[i]), result[0].index(max(result[0]))] += 1
 
     for i in range(len(data)):
-    	total = np.sum(data[i])
+        total = np.sum(data[i])
 
-	for x in range(len(data[0])):
-		data[i][x] = data[i][x] / total
+        for x in range(len(data[0])):
+            data[i][x] = data[i][x] / total
 
     print data
 
     print '[] Generating graph'
-    c = plt.pcolor(data, edgecolors = 'k', linewidths = 4, cmap = 'Blues', vmin = 0.0, vmax = 1.0)
+    c = plt.pcolor(data, edgecolors='k', linewidths=4, cmap='Blues', vmin=0.0, vmax=1.0)
     show_values(c)
 
 def show_values(pc, fmt='%.2f', **kw):
@@ -70,10 +78,10 @@ def show_values(pc, fmt='%.2f', **kw):
 
     pc.update_scalarmappable()
     ax = pc.get_axes()
-    ax.set_yticks(np.arange(7) + 0.5, minor = False)
-    ax.set_xticks(np.arange(7) + 0.5, minor = False)
-    ax.set_xticklabels(classes, minor = False)
-    ax.set_yticklabels(classes, minor = False)
+    ax.set_yticks(np.arange(7) + 0.5, minor=False)
+    ax.set_xticks(np.arange(7) + 0.5, minor=False)
+    ax.set_xticklabels(classes, minor=False)
+    ax.set_yticklabels(classes, minor=False)
 
     for p, color, value in izip(pc.get_paths(), pc.get_facecolors(), pc.get_array()):
         x, y = p.vertices[:-2, :].mean(0)
@@ -82,7 +90,8 @@ def show_values(pc, fmt='%.2f', **kw):
             color = (0.0, 0.0, 0.0)
         else:
             color = (1.0, 1.0, 1.0)
-            ax.text(x, y, fmt % value, ha='center', va='center', color=color, **kw)
+            ax.text(x, y, fmt % value, ha='center',
+                    va='center', color=color, **kw)
 
 def predict(model, images, classes):
     print 'Predicting...'
@@ -96,7 +105,7 @@ def predict(model, images, classes):
             print('{:>10}:  {}'.format(classes[j], round(prediction, 4)))
 
             if prediction_set.tolist().index(max(prediction_set)) == prediction_set.tolist().index(prediction):
-                distribution[classes[j]] +=  1
+                distribution[classes[j]] += 1
 
     print('-' * 42)
 
@@ -120,7 +129,7 @@ def predict_on_demand(model, images_path, image_width, image_height, classes):
                 print('{:>10}:  {}'.format(classes[i], round(prediction, 4)))
 
                 if prediction_set.tolist().index(max(prediction_set)) == prediction_set.tolist().index(prediction):
-                    distribution[classes[i]] +=  1
+                    distribution[classes[i]] += 1
 
     print('-' * 42)
     print('Predictions distribution:')
@@ -151,16 +160,91 @@ def evaluate_model(model, images_path, image_width, image_height, number_of_clas
     labels = to_categorical(class_labels, number_of_classes)
 
     print('\nEvaluating...')
-    print('Evaluation result: {}'.format(round(model.evaluate(images, labels, int((len(images) * batch_size)))[0], 4)))
+    print('Evaluation result: {}'.format(round(model.evaluate(
+        images, labels, int((len(images) * batch_size)))[0], 4)))
+
+def camera_prediction(model):
+    frequency = 0.25  # seconds
+    instant = -1
+
+    faceCascade = CascadeClassifier('haarcascade_frontalface_alt.xml')
+    capture = VideoCapture(0)
+
+    while True:
+        ret, frame = capture.read()
+        image = copy.deepcopy(frame)
+
+        gray = cvtColor(frame, COLOR_BGR2GRAY)
+
+        faces = faceCascade.detectMultiScale(
+            gray,
+            scaleFactor=1.1,
+            minNeighbors=5,
+            minSize=(30, 30),
+            flags=CASCADE_SCALE_IMAGE
+        )
+
+        captured_face = None
+
+        for (x, y, w, h) in faces:
+            rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            captured_face = gray[y: y + h, x: x + w]
+
+        imshow('Face detector', frame)
+
+        if captured_face is not None:
+            captured_face = resize(captured_face, (32, 32))
+
+            instant = classify_emotion(
+                model, captured_face, instant, frequency)
+            captured_face = None
+
+        if waitKey(1) & 0xFF == ord('q'):
+            break
+
+    video_capture.release()
+    destroyAllWindows()
+
+def classify_emotion(model, frame, instant, frequency):
+    if instant < 0 or time.time() - instant >= 60 * frequency:
+
+        instant = time.time()
+
+        process = Process(run_prediction(model, frame))
+        process.start()
+
+        return instant
+    return instant
+
+def run_prediction(model, frame):
+    if os.path.exists('/tmp/images'):
+        shutil.rmtree('/tmp/images')
+
+    os.makedirs('/tmp/images')
+
+    imwrite('/tmp/images/to_classify.jpg', frame)
+
+    print ''
+    predict_on_demand(model, '/tmp/images', image_width, image_height, classes)
 
 
 if __name__ == '__main__':
     model_path = 'final_model/final_model.tflearn'
 
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 2:
         images_path = sys.argv[1]
+        task = int(sys.argv[2])
     else:
-        images_path = 'Datasets/FER+/Training'
+        if not os.path.isdir(sys.argv[1]): 
+            print 'Inform images path and task type'
+            print '  1 - Evalutate model (classes path)'
+            print '  2 - Predict on demand (images path)'
+            print '  3 - Predict in memory (images path)'
+            print '  4 - Visual evaluation (images path)'
+            exit(0)
+        else:
+            images_path = sys.argv[1]
+            task = 1
 
     classes_path = 'data/classes_classes.npy'
     for file in os.listdir('data'):
@@ -180,10 +264,17 @@ if __name__ == '__main__':
     print('\nLoading model')
     model.load(model_path)
 
-    # images = load_images(images_path, image_width, image_height)
-
-    # generate_confusion_matrix(model, images, classes, number_of_classes)
-    # predict(model, images, classes)
-    evaluate_model(model, images_path, image_width, image_height, number_of_classes)
-    # visual_evaluation(model, images, classes)
-    # predict_on_demand(model, images_path, image_width, image_height, classes)
+    if task == 1:
+        evaluate_model(model, images_path, image_width,
+                       image_height, number_of_classes)
+    elif task == 2:
+        predict_on_demand(model, images_path, image_width,
+                          image_height, classes)
+    elif task == 3:
+        images = load_images(images_path, image_width, image_height)
+        predict(model, images, classes)
+    elif task == 4:
+        images = load_images(images_path, image_width, image_height)
+        visual_evaluation(model, images, classes)
+    elif task == 5:
+        camera_prediction(model)
