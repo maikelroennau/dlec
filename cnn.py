@@ -103,7 +103,7 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
     network = fully_connected(network, number_of_classes, activation='softmax', name="FullyConnected_Final")
     print('  {}: {}'.format('FullyConnected_Final..', network.shape))
 
-    
+
     batch_normalization(network, name='BatchNormalization_1')
     print('  {}: {}'.format('BatchNormalization....', network.shape))
 
