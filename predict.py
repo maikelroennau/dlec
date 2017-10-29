@@ -265,11 +265,9 @@ if __name__ == '__main__':
     model.load(model_path)
 
     if task == 1:
-        evaluate_model(model, images_path, image_width,
-                       image_height, number_of_classes)
+        evaluate_model(model, images_path, image_width, image_height, number_of_classes)
     elif task == 2:
-        predict_on_demand(model, images_path, image_width,
-                          image_height, classes)
+        predict_on_demand(model, images_path, image_width, image_height, classes)
     elif task == 3:
         images = load_images(images_path, image_width, image_height)
         predict(model, images, classes)
