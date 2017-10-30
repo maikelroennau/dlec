@@ -164,7 +164,7 @@ def evaluate_model(model, images_path, image_width, image_height, number_of_clas
         images, labels, int((len(images) * batch_size)))[0], 4)))
 
 def camera_prediction(model):
-    frequency = 0.25  # seconds
+    frequency = 0.06  # minutes
     instant = -1
 
     faceCascade = CascadeClassifier('haarcascade_frontalface_alt.xml')
