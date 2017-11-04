@@ -67,7 +67,7 @@ def generate_confusion_matrix(model, images, classes, number_of_classes):
         for x in range(len(data[0])):
             data[i][x] = data[i][x] / total
 
-    print data
+    print(data)
 
     print('[] Generating graph')
     c = plt.pcolor(data, edgecolors='k', linewidths=4, cmap='Blues', vmin=0.0, vmax=1.0)
