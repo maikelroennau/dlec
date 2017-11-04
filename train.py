@@ -36,9 +36,9 @@ def get_batch_size(number_of_images, percentage):
         return int(number_of_images * percentage)
 
 def train(resume_training=False):
-    train_dataset = 'Datasets/Custom'
+    train_dataset = 'Datasets/CK'
     train_dataset_name = train_dataset.split('/')[1]
-    validation_dataset = 'Datasets/CK'
+    validation_dataset = 'Datasets/Custom'
 
     if validation_dataset is not None:
         validation_dataset_name = 'validation_{}'.format(validation_dataset.split('/')[1])
@@ -73,6 +73,8 @@ def train(resume_training=False):
     if validation_dataset is not None:
         print 'Validation dataset: {}'.format(validation_dataset_name[11:])
     print 'Learning rate.....: {}'.format(learning_rate)
+    print 'Image width.......: {}'.format(image_width)
+    print 'Image height......: {}'.format(image_height)
     print 'Epochs............: {}'.format(epochs)
     print 'Batch size........: {}'.format(get_batch_size(len(X), batch_size))
 
