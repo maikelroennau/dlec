@@ -17,7 +17,7 @@ img_aug = ImageAugmentation()
 img_aug.add_random_flip_leftright()
 img_aug.add_random_blur(sigma_max=25.)
 img_aug.add_random_rotation(max_angle=10.)
-img_aug.add_random_crop((32, 32), 6) # might need to be changed in case of different image size
+# img_aug.add_random_crop((32, 32), 6) # might need to be changed in case of different image size
 
 
 def get_network_architecture(image_width, image_height, number_of_classes, learning_rate):
@@ -41,7 +41,7 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
         network = conv_2d(network, 32, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_1')
         network = max_pool_2d(network, (2, 2), strides=2, padding='same', name='MaxPool2D_1')
         network = dropout(network, 0.5, name='Dropout_1')
-        batch_normalization(network, name='BatchNormalization_1')
+        network = batch_normalization(network, name='BatchNormalization')
         network = flatten(network, name='Flatten')
         network = fully_connected(network, 512, activation='relu', name='FullyConnected_1')
         network = fully_connected(network, number_of_classes, activation='softmax', name='FullyConnected_Final')
@@ -70,42 +70,38 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
     """
 
     print('\nNetwork architecture:')
-    print('  {}: {}'.format('Input.................', network.shape))
+    print('  {}: {}'.format('InputData.............', network.shape))
 
-    network = conv_2d(network, 32, (3, 3), strides=1, padding='same', activation='relu', name='Conv2D_1')
+    network = conv_2d(network, 64, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_1')
     print('  {}: {}'.format('Conv2D................', network.shape))
-    # network = max_pool_2d(network, (2, 2), strides=None, padding='same', name="MaxPool2D_1")
-    # print('  {}: {}'.format('MaxPool2D.............', network.shape))
 
 
-    network = conv_2d(network, 32, (3, 3), strides=1, padding='same', activation='relu', name='Conv2D_2')
+    network = conv_2d(network, 64, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_2')
     print('  {}: {}'.format('Conv2D................', network.shape))
-    network = max_pool_2d(network, (2, 2), strides=None, padding='same', name='MaxPool2D_2')
+
+
+    network = conv_2d(network, 128, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_3')
+    print('  {}: {}'.format('Conv2D................', network.shape))
+    network = max_pool_2d(network, (2, 2), strides=2, padding='same', name='MaxPool2D_1')
     print('  {}: {}'.format('MaxPool2D.............', network.shape))
 
 
-    network = conv_2d(network, 64, (3, 3), strides=1, padding='same', activation='relu', name='Conv2D_3')
-    print('  {}: {}'.format('Conv2D................', network.shape))
-    network = max_pool_2d(network, (2, 2), strides=None, padding='same', name='MaxPool2D_3')
-    print('  {}: {}'.format('MaxPool2D.............', network.shape))
-
-
-    network = flatten(network, name="Flatten")
+    network = flatten(network, name='Flatten')
     print('  {}: {}'.format('Flatten...............', network.shape))
 
 
-    network = fully_connected(network, 64, activation='relu', name="FullyConnected_1")
+    network = fully_connected(network, 512, activation='relu', name='FullyConnected_1')
     print('  {}: {}'.format('FullyConnected........', network.shape))
-    # network = dropout(network, 0.5, name="Dropout_1")
+    network = dropout(network, 0.5, name='Dropout_1')
     print('  {}: {}'.format('Dropout...............', network.shape))
+
+
+    network = batch_normalization(network, name='BatchNormalization_1')
+    print('  {}: {}'.format('BatchNormalization....', network.shape))
 
 
     network = fully_connected(network, number_of_classes, activation='softmax', name="FullyConnected_Final")
     print('  {}: {}'.format('FullyConnected_Final..', network.shape))
-
-
-    batch_normalization(network, name='BatchNormalization_1')
-    print('  {}: {}'.format('BatchNormalization....', network.shape))
 
 
     optimizer = Adam(learning_rate=learning_rate, beta1=0.9, beta2=0.999, epsilon=1e-08, use_locking=False, name='Adam')
@@ -134,4 +130,4 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
 if __name__ == '__main__':
     get_network_architecture(32, 32, 2, 0)
 
-    print '\nArchitecture sample based on input of 32x32 with 2 output classes.'
+    print('\nArchitecture sample based on input of 32x32 with 2 output classes.')

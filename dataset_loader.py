@@ -1,4 +1,5 @@
 import os
+import sys
 from random import shuffle
 
 import numpy as np
@@ -18,8 +19,12 @@ def load_dataset_images(dataset_path, image_width, image_height, dataset_name='u
     number_of_images, images_per_class = get_total_number_of_images(dataset_path)
 
     print('\nNumber of images per class:')
-    for key, value in images_per_class.iteritems():
-        print('{}: {}'.format(key, images_per_class.get(key)))
+    if sys.version_info < (3,4):
+        for key, value in images_per_class.iteritems():
+            print('{}: {}'.format(key, images_per_class.get(key)))
+    else:
+        for key, value in images_per_class.items():
+            print('{}: {}'.format(key, images_per_class.get(key)))
 
     print('\nTotal images: {}'.format(number_of_images))
 

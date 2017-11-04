@@ -45,8 +45,8 @@ def train(resume_training=False):
 
     number_of_classes = len(dataset_loader.get_classes(train_dataset))
 
-    image_width = 32
-    image_height = 32
+    image_width = 64
+    image_height = 64
 
     learning_rate = 1e-3
     test_size = 0.1
@@ -69,14 +69,14 @@ def train(resume_training=False):
     Y = to_categorical(Y, number_of_classes)
     Y_test = to_categorical(Y_test, number_of_classes)
 
-    print '\nTrain dataset.....: {}'.format(train_dataset_name)
+    print('\nTrain dataset.....: {}'.format(train_dataset_name))
     if validation_dataset is not None:
-        print 'Validation dataset: {}'.format(validation_dataset_name[11:])
-    print 'Learning rate.....: {}'.format(learning_rate)
-    print 'Image width.......: {}'.format(image_width)
-    print 'Image height......: {}'.format(image_height)
-    print 'Epochs............: {}'.format(epochs)
-    print 'Batch size........: {}'.format(get_batch_size(len(X), batch_size))
+        print('Validation dataset: {}'.format(validation_dataset_name[11:]))
+    print('Learning rate.....: {}'.format(learning_rate))
+    print('Image width.......: {}'.format(image_width))
+    print('Image height......: {}'.format(image_height))
+    print('Epochs............: {}'.format(epochs))
+    print('Batch size........: {}'.format(get_batch_size(len(X), batch_size)))
 
     network = cnn.get_network_architecture(image_width, image_height, number_of_classes, learning_rate)
 

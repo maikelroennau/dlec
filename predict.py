@@ -54,7 +54,7 @@ def save_image(name, image, path=None):
         imwrite('{}'.format(name), image)
 
 def generate_confusion_matrix(model, images, classes, number_of_classes):
-    print 'Generating confusion matrix'
+    print('Generating confusion matrix')
     data = np.zeros((number_of_classes, number_of_classes))
 
     for i in xrange(images.shape[0]):
@@ -69,7 +69,7 @@ def generate_confusion_matrix(model, images, classes, number_of_classes):
 
     print data
 
-    print '[] Generating graph'
+    print('[] Generating graph')
     c = plt.pcolor(data, edgecolors='k', linewidths=4, cmap='Blues', vmin=0.0, vmax=1.0)
     show_values(c)
 
@@ -94,7 +94,7 @@ def show_values(pc, fmt='%.2f', **kw):
                     va='center', color=color, **kw)
 
 def predict(model, images, classes):
-    print 'Predicting...'
+    print('Predicting...')
     predictions = model.predict(images)
     del images
     distribution = {key: 0 for key in classes.values()}
@@ -114,7 +114,7 @@ def predict(model, images, classes):
         print('  {}: {}'.format(class_label, distribution[class_label]))
 
 def predict_on_demand(model, images_path, image_width, image_height, classes):
-    print 'Predicting...'
+    print('Predicting...')
     distribution = {key: 0 for key in classes.values()}
 
     for image in os.listdir(images_path):
@@ -137,7 +137,7 @@ def predict_on_demand(model, images_path, image_width, image_height, classes):
         print('  {}: {}'.format(class_label, distribution[class_label]))
 
 def visual_evaluation(model, images, classes):
-    print 'Predicting...'
+    print('Predicting...')
     directories = [classes.values()][0]
     for directory in directories:
         try:
@@ -224,7 +224,7 @@ def run_prediction(model, frame):
 
     imwrite('/tmp/images/to_classify.jpg', frame)
 
-    print ''
+    print('')
     predict_on_demand(model, '/tmp/images', image_width, image_height, classes)
 
 
@@ -235,12 +235,12 @@ if __name__ == '__main__':
         images_path = sys.argv[1]
         task = int(sys.argv[2])
     else:
-        if not os.path.isdir(sys.argv[1]): 
-            print 'Inform images path and task type'
-            print '  1 - Evalutate model (classes path)'
-            print '  2 - Predict on demand (images path)'
-            print '  3 - Predict in memory (images path)'
-            print '  4 - Visual evaluation (images path)'
+        if not os.path.isdir(sys.argv[1]):
+            print('Inform images path and task type')
+            print('  1 - Evalutate model (classes path)')
+            print('  2 - Predict on demand (images path)')
+            print('  3 - Predict in memory (images path)')
+            print('  4 - Visual evaluation (images path)')
             exit(0)
         else:
             images_path = sys.argv[1]
@@ -251,8 +251,8 @@ if __name__ == '__main__':
         if not file.startswith('validation_') and file[-12:].endswith('_classes.npy'):
             classes_path = 'data/{}'.format(file)
 
-    image_width = 32
-    image_height = 32
+    image_width = 64
+    image_height = 64
     learning_rate = 1e-3
 
     classes = load_classes(classes_path)
