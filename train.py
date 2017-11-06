@@ -51,7 +51,7 @@ def train(resume_training=False):
     learning_rate = 1e-3
     test_size = 0.1
     batch_size = 0.05
-    epochs = 20
+    epochs = 5
 
     images, labels = dataset_loader.load_dataset_images(train_dataset, image_width, image_height, train_dataset_name, load_backup=True, export_dataset=True)
     shuffle(images, labels)
