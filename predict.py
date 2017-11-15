@@ -235,12 +235,13 @@ if __name__ == '__main__':
         images_path = sys.argv[1]
         task = int(sys.argv[2])
     else:
-        if not os.path.isdir(sys.argv[1]):
-            print('Inform images path and task type')
+        if len(sys.argv) < 2:
+            print('Inform images path and task type:')
             print('  1 - Evalutate model (classes path)')
             print('  2 - Predict on demand (images path)')
             print('  3 - Predict in memory (images path)')
             print('  4 - Visual evaluation (images path)')
+            print('\n Example: python predict.py <path> <task>\n')
             exit(0)
         else:
             images_path = sys.argv[1]
