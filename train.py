@@ -22,7 +22,7 @@ def create_directories():
 def get_model(model_path, model):
     print('\nRestoring model')
     model.load(model_path)
-    
+
     return model
 
 def backup_network():
@@ -36,9 +36,9 @@ def get_batch_size(number_of_images, percentage):
         return int(number_of_images * percentage)
 
 def train(resume_training=False):
-    train_dataset = 'Datasets/CK/training'
+    train_dataset = 'Datasets/train'
     train_dataset_name = train_dataset.split('/')[1]
-    validation_dataset = 'Datasets/CK/validation'
+    validation_dataset = 'Datasets/validation'
 
     if validation_dataset is not None:
         validation_dataset_name = 'validation_{}'.format(validation_dataset.split('/')[1])
