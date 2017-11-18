@@ -22,7 +22,7 @@ def create_directories():
 def get_model(model_path, model):
     print('\nRestoring model')
     model.load(model_path)
-
+    
     return model
 
 def backup_network():
@@ -30,15 +30,15 @@ def backup_network():
     open('final_model/__init__.py', 'a')
 
 def get_batch_size(number_of_images, percentage):
-    if (number_of_images * percentage) > 128:
-        return 128
+    if (number_of_images * percentage) > 32:
+        return 32
     else:
         return int(number_of_images * percentage)
 
 def train(resume_training=False):
-    train_dataset = 'Datasets/CK'
+    train_dataset = 'Datasets/CK/training'
     train_dataset_name = train_dataset.split('/')[1]
-    validation_dataset = 'Datasets/Custom'
+    validation_dataset = 'Datasets/CK/validation'
 
     if validation_dataset is not None:
         validation_dataset_name = 'validation_{}'.format(validation_dataset.split('/')[1])
@@ -49,8 +49,8 @@ def train(resume_training=False):
     image_height = 64
 
     learning_rate = 1e-3
-    test_size = 0.1
-    batch_size = 0.05
+    test_size = 0.2
+    batch_size = 0.03
     epochs = 5
 
     images, labels = dataset_loader.load_dataset_images(train_dataset, image_width, image_height, train_dataset_name, load_backup=True, export_dataset=True)

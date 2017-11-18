@@ -2,7 +2,7 @@ import tflearn
 from tflearn.activations import relu
 from tflearn.data_augmentation import ImageAugmentation
 from tflearn.data_preprocessing import ImagePreprocessing
-from tflearn.layers.conv import conv_2d, max_pool_2d
+from tflearn.layers.conv import conv_2d, max_pool_2d, avg_pool_2d
 from tflearn.layers.core import dropout, flatten, fully_connected, input_data
 from tflearn.layers.estimator import regression
 from tflearn.layers.normalization import (batch_normalization, local_response_normalization)
@@ -10,8 +10,8 @@ from tflearn.optimizers import SGD, Adam, Momentum, RMSProp
 from tflearn.metrics import Accuracy, R2, WeightedR2, Top_k
 
 img_prep = ImagePreprocessing()
-img_prep.add_featurewise_zero_center()
-img_prep.add_featurewise_stdnorm()
+# img_prep.add_featurewise_zero_center()
+# img_prep.add_featurewise_stdnorm()
 
 img_aug = ImageAugmentation()
 img_aug.add_random_flip_leftright()
@@ -40,6 +40,7 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
 
         network = conv_2d(network, 32, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_1')
         network = max_pool_2d(network, (2, 2), strides=2, padding='same', name='MaxPool2D_1')
+        network = avg_pool_2d(network, (2, 2), strides=2, padding='same', name='AvgPool2D_1')
         network = dropout(network, 0.5, name='Dropout_1')
         network = batch_normalization(network, name='BatchNormalization')
         network = flatten(network, name='Flatten')
@@ -72,30 +73,74 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
     print('\nNetwork architecture:')
     print('  {}: {}'.format('InputData.............', network.shape))
 
-    network = conv_2d(network, 64, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_1')
+    network = conv_2d(network, 16, (7, 7), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_1')
     print('  {}: {}'.format('Conv2D................', network.shape))
-
-
-    network = conv_2d(network, 64, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_2')
+    network = batch_normalization(network, name='BatchNormalization_1')
+    print('  {}: {}'.format('BatchNormalization....', network.shape))
+    network = conv_2d(network, 16, (7, 7), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_2')
     print('  {}: {}'.format('Conv2D................', network.shape))
+    network = batch_normalization(network, name='BatchNormalization_2')
+    print('  {}: {}'.format('BatchNormalization....', network.shape))
+    network = avg_pool_2d(network, (2, 2), strides=2, padding='same', name='AvgPool2D_1')
+    print('  {}: {}'.format('AvgPool2D.............', network.shape))
+    network = dropout(network, 0.5, name='Dropout_1')
+    print('  {}: {}'.format('Dropout...............', network.shape))
 
 
-    network = conv_2d(network, 128, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_3')
+    network = conv_2d(network, 32, (5, 5), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_3')
     print('  {}: {}'.format('Conv2D................', network.shape))
-    network = max_pool_2d(network, (2, 2), strides=2, padding='same', name='MaxPool2D_1')
-    print('  {}: {}'.format('MaxPool2D.............', network.shape))
-
-
-    network = conv_2d(network, 128, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_4')
+    network = batch_normalization(network, name='BatchNormalization_3')
+    print('  {}: {}'.format('BatchNormalization....', network.shape))
+    network = conv_2d(network, 32, (5, 5), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_4')
     print('  {}: {}'.format('Conv2D................', network.shape))
-    # network = max_pool_2d(network, (2, 2), strides=2, padding='same', name='MaxPool2D_2')
-    # print('  {}: {}'.format('MaxPool2D.............', network.shape))
+    network = batch_normalization(network, name='BatchNormalization_4')
+    print('  {}: {}'.format('BatchNormalization....', network.shape))
+    network = avg_pool_2d(network, (2, 2), strides=2, padding='same', name='AvgPool2D_2')
+    print('  {}: {}'.format('AvgPool2D.............', network.shape))
+    network = dropout(network, 0.5, name='Dropout_2')
+    print('  {}: {}'.format('Dropout...............', network.shape))
 
 
-    network = conv_2d(network, 128, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_5')
+    network = conv_2d(network, 64, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_5')
     print('  {}: {}'.format('Conv2D................', network.shape))
-    # network = max_pool_2d(network, (2, 2), strides=2, padding='same', name='MaxPool2D_3')
-    # print('  {}: {}'.format('MaxPool2D.............', network.shape))
+    network = batch_normalization(network, name='BatchNormalization_5')
+    print('  {}: {}'.format('BatchNormalization....', network.shape))
+    network = conv_2d(network, 64, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_6')
+    print('  {}: {}'.format('Conv2D................', network.shape))
+    network = batch_normalization(network, name='BatchNormalization_6')
+    print('  {}: {}'.format('BatchNormalization....', network.shape))
+    network = avg_pool_2d(network, (2, 2), strides=2, padding='same', name='AvgPool2D_3')
+    print('  {}: {}'.format('AvgPool2D.............', network.shape))
+    network = dropout(network, 0.5, name='Dropout_3')
+    print('  {}: {}'.format('Dropout...............', network.shape))
+
+
+    network = conv_2d(network, 128, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_7')
+    print('  {}: {}'.format('Conv2D................', network.shape))
+    network = batch_normalization(network, name='BatchNormalization_7')
+    print('  {}: {}'.format('BatchNormalization....', network.shape))
+    network = conv_2d(network, 128, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_8')
+    print('  {}: {}'.format('Conv2D................', network.shape))
+    network = batch_normalization(network, name='BatchNormalization_8')
+    print('  {}: {}'.format('BatchNormalization....', network.shape))
+    network = avg_pool_2d(network, (2, 2), strides=2, padding='same', name='AvgPool2D_4')
+    print('  {}: {}'.format('AvgPool2D.............', network.shape))
+    network = dropout(network, 0.5, name='Dropout_4')
+    print('  {}: {}'.format('Dropout...............', network.shape))
+
+
+    network = conv_2d(network, 256, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_9')
+    print('  {}: {}'.format('Conv2D................', network.shape))
+    network = batch_normalization(network, name='BatchNormalization_9')
+    print('  {}: {}'.format('BatchNormalization....', network.shape))
+    network = conv_2d(network, 256, (3, 3), strides=1, padding='same', activation='relu', regularizer='L2', name='Conv2D_10')
+    print('  {}: {}'.format('Conv2D................', network.shape))
+    network = batch_normalization(network, name='BatchNormalization_10')
+    print('  {}: {}'.format('BatchNormalization....', network.shape))
+    network = avg_pool_2d(network, (2, 2), strides=2, padding='same', name='AvgPool2D_5')
+    print('  {}: {}'.format('AvgPool2D.............', network.shape))
+    network = dropout(network, 0.5, name='Dropout_5')
+    print('  {}: {}'.format('Dropout...............', network.shape))
 
 
     network = flatten(network, name='Flatten')
@@ -104,12 +149,8 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
 
     network = fully_connected(network, 512, activation='relu', name='FullyConnected_1')
     print('  {}: {}'.format('FullyConnected........', network.shape))
-    network = dropout(network, 0.2, name='Dropout_1')
+    network = dropout(network, 0.5, name='Dropout_6')
     print('  {}: {}'.format('Dropout...............', network.shape))
-
-
-    network = batch_normalization(network, name='BatchNormalization_1')
-    print('  {}: {}'.format('BatchNormalization....', network.shape))
 
 
     network = fully_connected(network, number_of_classes, activation='softmax', name="FullyConnected_Final")
@@ -140,6 +181,6 @@ def get_network_architecture(image_width, image_height, number_of_classes, learn
 
 
 if __name__ == '__main__':
-    get_network_architecture(32, 32, 2, 0)
+    get_network_architecture(64, 64, 7, 0)
 
     print('\nArchitecture sample based on input of 32x32 with 2 output classes.')
