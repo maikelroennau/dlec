@@ -180,7 +180,7 @@ def camera_prediction(model):
             gray,
             scaleFactor=1.1,
             minNeighbors=5,
-            minSize=(30, 30),
+            minSize=(image_width, image_height),
             flags=CASCADE_SCALE_IMAGE
         )
 
@@ -193,7 +193,7 @@ def camera_prediction(model):
         imshow('Face detector', frame)
 
         if captured_face is not None:
-            captured_face = resize(captured_face, (32, 32))
+            captured_face = resize(captured_face, (image_width, image_height))
 
             instant = classify_emotion(
                 model, captured_face, instant, frequency)
