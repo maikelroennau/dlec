@@ -61,7 +61,7 @@ Accomplish researches on deep learning and develop a model capable to classify h
 
 ### Author
 
-**Maikel Maciel Rönnau**
-*Computer Scientist
-maikel.ronnau@gmail.com
+**Maikel Maciel Rönnau**  
+*Computer Scientist  
+maikel.ronnau@gmail.com  
 [Linkedin](https://br.linkedin.com/in/maikelronnau) - [GitHub](https://github.com/maikelronnau)*
