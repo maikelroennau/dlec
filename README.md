@@ -59,7 +59,7 @@ Accomplish researches on deep learning and develop a model capable to classify h
     - `python predict.py /Datasets/Test/ 1` (evaluates the model)
     - `python predict.py . 5` (real time predictions using the embedded camera)
 
-### Author
+## Author
 
 **Maikel Maciel Rönnau**  
 *Computer Scientist  
