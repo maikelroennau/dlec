@@ -241,6 +241,7 @@ if __name__ == '__main__':
             print('  2 - Predict on demand (images path)')
             print('  3 - Predict in memory (images path)')
             print('  4 - Visual evaluation (images path)')
+            print('  5 - Real time camera prediction')
             print('\n Example: python predict.py <path> <task>\n')
             exit(0)
         else:
