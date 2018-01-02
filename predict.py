@@ -207,7 +207,6 @@ def camera_prediction(model):
 
 def classify_emotion(model, frame, instant, frequency):
     if instant < 0 or time.time() - instant >= 60 * frequency:
-
         instant = time.time()
 
         process = Process(run_prediction(model, frame))
@@ -231,22 +230,25 @@ def run_prediction(model, frame):
 if __name__ == '__main__':
     model_path = 'final_model/final_model.tflearn'
 
-    if len(sys.argv) > 2:
-        images_path = sys.argv[1]
-        task = int(sys.argv[2])
+    if len(sys.argv) == 1:
+        print('Inform the task number and image(s) path:')
+        print('  1 - Evalutate model (classes path)')
+        print('  2 - Predict on demand (images path)')
+        print('  3 - Predict in memory (images path)')
+        print('  4 - Visual evaluation (images path)')
+        print('  5 - Single image prediction (image path)')
+        print('  6 - Real time camera prediction')
+        print('\n Example: python predict.py <path> <task>')
+        exit(0)
     else:
-        if len(sys.argv) < 2:
-            print('Inform images path and task type:')
-            print('  1 - Evalutate model (classes path)')
-            print('  2 - Predict on demand (images path)')
-            print('  3 - Predict in memory (images path)')
-            print('  4 - Visual evaluation (images path)')
-            print('  5 - Real time camera prediction')
-            print('\n Example: python predict.py <path> <task>\n')
-            exit(0)
-        else:
-            images_path = sys.argv[1]
+        if os.path.exists(sys.argv[1]):
             task = 1
+            images_path = sys.argv[1]
+        elif int(sys.argv[1]) == 6:
+            task = 6
+        else:
+            task = int(sys.argv[1])
+            images_path = sys.argv[2]
 
     classes_path = 'data/classes_classes.npy'
     for file in os.listdir('data'):
@@ -277,4 +279,9 @@ if __name__ == '__main__':
         images = load_images(images_path, image_width, image_height)
         visual_evaluation(model, images, classes)
     elif task == 5:
+        image = load_image(images_path, image_width, image_height)
+        print(image.shape)
+        # print(image[0])
+        run_prediction(model, image[0])
+    elif task == 6:
         camera_prediction(model)
