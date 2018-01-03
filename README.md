@@ -2,7 +2,9 @@
 
 ## Description
 
-DLEC is a convolutional neural network that classifies images of human facial expressions in emotions. It can be used as a framework for developing general purpose deep learning classifiers.
+DLEC is a convolutional neural network that classifies images of human facial expressions in emotions. 
+<!-- -->
+It can be used as a framework for developing general purpose deep learning classifiers.
 
 ## Motivation
 
