@@ -56,8 +56,19 @@ Accomplish researches on deep learning and develop a model capable to classify h
 <!-- -->
 
 - Examples:
-    - `python predict.py /Datasets/Test/ 1` (evaluates the model)
-    - `python predict.py . 5` (real time predictions using the embedded camera)
+    - `python predict.py 1 /Datasets/Test/` (evaluates the model)
+    - `python predict.py 6` (real time predictions using the embedded camera)
+    - `python predict.py <TASK> <PATH>` (general case)
+
+<!-- -->
+
+- Option 1 does not require the task specification. The command `python predict.py <PATH>` will run into task 1
+- Option 6 does not need any path, since it will use the embedded camera as source
+
+### Technical notes
+
+- The code is runnable both in Python 2 and Python 3
+- The code also works on Windows (it was tested on Windows 10). Keep in mind adjustments might be required for your environment.
 
 ## Author
 
